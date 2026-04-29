@@ -1,0 +1,1035 @@
+CONTEXTO DEL PROYECTO
+
+Desarrollo de una Progressive Web App (PWA) completa para "monno", una cafetería de especialidad. El objetivo es digitalizar la experiencia del cliente para aumentar la eficiencia operativa y la facturación. La aplicación debe ser completamente funcional, moderna, minimalista con toque futurista, y lista para ser desplegada como TFG (Trabajo Final de Grado).
+
+IDENTIDAD DE MARCA
+
+
+
+
+
+Nombre: monno
+
+
+
+Logo: Asterisco negro (proporcionado en imagen adjunta)
+
+
+
+Colores principales:
+
+
+
+
+
+Primario: Blanco (#FFFFFF)
+
+
+
+Secundario: Plateado/Gris claro (#E5E5E5, #C0C0C0)
+
+
+
+Acento: Negro (#000000)
+
+
+
+Estilo: Moderno, minimalista, con ligero toque futurista
+
+
+
+Tipografía: Sans-serif moderna y limpia (sugerencia: Inter, Poppins o similar)
+
+
+
+Diseño: Espacios amplios, elementos geométricos sutiles, micro-interacciones suaves
+
+CATÁLOGO DE PRODUCTOS
+
+COFFEE (Categoría 1)
+
+Espresso - 2,00 € Cortado - 2,40 € Americano - 2,80 € Latte - 2,80 € Cappuccino - 2,80 € Flat White - 3,40 € Mocha - 3,90 € Iced Cortado - 3,00 € Iced Americano - 3,40 € Iced Latte - 3,40 € Iced Flat White - 4,00 € Iced Mocha - 4,50 €
+
+SIGNATURES (Categoría 2) - Base 3,20 €
+
+Caramel - 3,90 € Vanilla - 3,90 € Pistachio - 3,90 € Spanish - 3,90 € Iced Caramel - 4,50 € Iced Vanilla - 4,50 € Iced Pistachio - 4,50 € Iced Spanish - 4,50 €
+
+CACAO (Categoría 3) - Base 4,20 €
+
+Dark Chocolate - 3,90 € White Chocolate - 3,90 € Iced Dark Chocolate - 4,50 € Iced White Chocolate - 4,50 €
+
+MATCHA (Categoría 4) - Base 4,20 €
+
+Matcha Latte - 3,90 € Vanilla Matcha - 3,90 € Pistachio Matcha - 3,90 € White Matcha - 3,90 € Dirty Matcha - 3,90 € Iced Matcha Latte - 4,50 € Iced Vanilla Matcha - 4,50 € Iced Pistachio Matcha - 4,50 € Iced White Matcha - 4,50 € Iced Dirty Matcha - 4,50 €
+
+NOTA: No hay opciones de personalización de momento. Los productos se piden tal cual aparecen en el menú.
+
+FUNCIONALIDADES OBLIGATORIAS
+
+1. MENÚ DIGITAL INTERACTIVO
+
+
+
+
+
+Vista de categorías con navegación fluida (Coffee, Signatures, Cacao, Matcha)
+
+
+
+Cards de productos con:
+
+
+
+
+
+Nombre del producto
+
+
+
+Precio destacado
+
+
+
+Imagen placeholder elegante (usar gradientes o íconos minimalistas si no hay fotos reales)
+
+
+
+Botón "Añadir al carrito" con micro-animación
+
+
+
+Diseño tipo grid responsive (1 columna móvil, 2-3 en tablet/desktop)
+
+
+
+Transiciones suaves entre categorías
+
+
+
+Búsqueda rápida opcional
+
+2. SISTEMA DE PEDIDOS ANTICIPADOS
+
+
+
+
+
+Carrito de compra:
+
+
+
+
+
+Icono flotante con contador de items
+
+
+
+Vista detallada del carrito (slide-in desde la derecha)
+
+
+
+Modificar cantidades (+/-)
+
+
+
+Eliminar productos
+
+
+
+Total calculado en tiempo real
+
+
+
+Opciones de pedido:
+
+
+
+
+
+"Para llevar" (Pick-up): Seleccionar hora de recogida (slots de 15 min)
+
+
+
+"Para tomar aquí" (Dine-in): Número de mesa
+
+
+
+Flujo de confirmación:
+
+
+
+
+
+Resumen del pedido
+
+
+
+Método de pago seleccionado
+
+
+
+Botón "Confirmar pedido" prominente
+
+
+
+Número de orden generado (formato: #MONNO-0001)
+
+
+
+Pantalla de confirmación con tiempo estimado
+
+3. PROGRAMA DE FIDELIZACIÓN DIGITAL
+
+
+
+
+
+Tarjeta virtual de puntos:
+
+
+
+
+
+Diseño estilo tarjeta de crédito minimalista
+
+
+
+Mostrar puntos acumulados (grande y destacado)
+
+
+
+Barra de progreso hacia próxima recompensa
+
+
+
+Nivel actual del usuario (Bronce/Plata/Oro/Platino)
+
+
+
+Sistema de acumulación:
+
+
+
+
+
+1 punto = 1€ gastado
+
+
+
+Actualización automática tras cada compra
+
+
+
+Animación al ganar puntos
+
+
+
+Recompensas:
+
+
+
+
+
+50 puntos = Café gratis (espresso, cortado o americano)
+
+
+
+100 puntos = Cualquier bebida gratis
+
+
+
+200 puntos = 10% descuento en próxima compra
+
+
+
+Recompensas exclusivas por nivel
+
+4. PASARELA DE PAGO INTEGRADA
+
+
+
+
+
+Métodos de pago:
+
+
+
+
+
+Tarjeta de crédito/débito (simulación o Stripe)
+
+
+
+Apple Pay / Google Pay (simulación visual)
+
+
+
+Opción de guardar método de pago
+
+
+
+Funcionalidades:
+
+
+
+
+
+Propina opcional (10%, 15%, 20%, personalizada)
+
+
+
+Aplicar puntos de fidelización como descuento
+
+
+
+Resumen final antes de pagar
+
+
+
+Recibo digital enviado por email (simulado)
+
+
+
+Seguridad visual:
+
+
+
+
+
+Iconos de candado
+
+
+
+Indicadores SSL
+
+
+
+Diseño que transmita confianza
+
+5. PERFIL DE USUARIO PERSONALIZADO
+
+
+
+
+
+Información básica:
+
+
+
+
+
+Nombre completo
+
+
+
+Email
+
+
+
+Teléfono
+
+
+
+Foto de perfil (opcional)
+
+
+
+Preferencias:
+
+
+
+
+
+Bebidas favoritas (guardadas con ❤️)
+
+
+
+Pedido recurrente "Mi habitual" (quick order)
+
+
+
+Método de pago por defecto
+
+
+
+Opción de recogida preferida
+
+
+
+Historial:
+
+
+
+
+
+Últimos pedidos (fecha, items, total)
+
+
+
+Facturas descargables (PDF simulado)
+
+8. NOTIFICACIONES PUSH
+
+
+
+
+
+Sistema de notificaciones (simulado o real con service worker):
+
+
+
+
+
+Estado del pedido:
+
+
+
+
+
+"Tu pedido está en preparación ☕"
+
+
+
+"¡Tu pedido está listo! 🎉"
+
+
+
+Promociones personalizadas
+
+
+
+Recordatorio si abandona carrito
+
+
+
+Nuevos productos de temporada
+
+
+
+Puntos próximos a expirar
+
+
+
+Centro de notificaciones:
+
+
+
+
+
+Historial de notificaciones
+
+
+
+Configuración de preferencias
+
+9. PANEL DE GESTIÓN (Admin Dashboard)
+
+
+
+
+
+Acceso restringido (login admin separado):
+
+
+
+
+
+Usuario: admin@monno.com
+
+
+
+Contraseña: (definir)
+
+
+
+Vista de pedidos en tiempo real:
+
+
+
+
+
+Lista de pedidos activos
+
+
+
+Estados: Recibido → En preparación → Listo → Entregado
+
+
+
+Filtros por estado, fecha, tipo (dine-in/pick-up)
+
+
+
+Detalle de cada pedido (items, cliente, hora)
+
+
+
+Gestión de productos:
+
+
+
+
+
+Marcar productos como "Agotado"
+
+
+
+Modificar precios (opcional)
+
+
+
+Activar/desactivar productos
+
+
+
+Estadísticas básicas:
+
+
+
+
+
+Ventas del día/semana/mes
+
+
+
+Productos más vendidos (top 5)
+
+
+
+Gráfico de ventas por hora
+
+
+
+Total de clientes registrados
+
+
+
+Ingresos totales
+
+
+
+Gestión de usuarios:
+
+
+
+
+
+Lista de clientes
+
+
+
+Puntos de fidelización de cada uno
+
+
+
+Últimos pedidos por cliente
+
+12. GAMIFICACIÓN
+
+
+
+
+
+Sistema de insignias (badges):
+
+
+
+
+
+🌟 Primer Café: Primera compra
+
+
+
+🔥 Racha de 3: Tres pedidos en una semana
+
+
+
+🌍 Explorador: Probar 5 productos diferentes
+
+
+
+💎 Fiel: 10 visitas a monno
+
+
+
+🌅 Madrugador: Pedido antes de las 8:00 AM
+
+
+
+🌙 Noctámbulo: Pedido después de las 20:00
+
+
+
+🎯 Coleccionista: Probar toda una categoría
+
+
+
+👑 VIP: Alcanzar nivel Platino
+
+
+
+💰 Gran Gastador: Gastar +100€ acumulados
+
+
+
+⚡ Flash: 5 pedidos en un mes
+
+
+
+Niveles de usuario:
+
+
+
+
+
+🥉 Bronce: 0-49 puntos (sin beneficios extra)
+
+
+
+🥈 Plata: 50-149 puntos (5% descuento permanente)
+
+
+
+🥇 Oro: 150-299 puntos (10% descuento + acceso early a nuevos productos)
+
+
+
+💎 Platino: 300+ puntos (15% descuento + bebida gratis en cumpleaños)
+
+
+
+Interfaz de gamificación:
+
+
+
+
+
+Sección "Mis logros" en perfil
+
+
+
+Insignias desbloqueadas vs bloqueadas (siluetas)
+
+
+
+Progreso hacia próxima insignia
+
+
+
+Notificación al desbloquear logro
+
+
+
+Animación celebratoria
+
+ARQUITECTURA TÉCNICA
+
+Stack Tecnológico Recomendado:
+
+
+
+
+
+Frontend: React + Vite (o Next.js)
+
+
+
+Estilo: Tailwind CSS + Framer Motion (animaciones)
+
+
+
+Estado: Context API o Zustand
+
+
+
+PWA: Workbox para service workers
+
+
+
+Backend simulado: JSON Server o Firebase (Firestore + Authentication)
+
+
+
+Pagos: Stripe (modo test) o simulación visual
+
+
+
+Notificaciones: Firebase Cloud Messaging o simulación
+
+Estructura de Base de Datos:
+
+users/   - id   - name   - email   - phone   - loyaltyPoints   - level (bronze/silver/gold/platinum)   - favorites[] (product IDs)   - badges[] (badge IDs)   - createdAt  products/   - id   - name   - category   - price   - available (boolean)   - imageUrl  orders/   - id (MONNO-XXXX)   - userId   - items[] (productId, quantity, price)   - total   - type (dine-in/pick-up)   - tableNumber / pickupTime   - status (received/preparing/ready/delivered)   - paymentMethod   - tip   - pointsEarned   - createdAt  badges/   - id   - name   - description   - icon   - criteria  notifications/   - id   - userId   - title   - message   - type   - read (boolean)   - createdAt
+
+DISEÑO UI/UX
+
+Paleta de Colores Detallada:
+
+css
+
+--primary-white: #FFFFFF --light-gray: #F5F5F5 --medium-gray: #E5E5E5 --silver: #C0C0C0 --dark-gray: #808080 --primary-black: #000000 --accent-gradient: linear-gradient(135deg, #E5E5E5, #C0C0C0)
+
+Componentes Clave:
+
+
+
+
+
+Navbar:
+
+
+
+
+
+Logo monno (asterisco) centrado o izquierda
+
+
+
+Iconos: 🔍 Buscar, 🛒 Carrito, 👤 Perfil
+
+
+
+Fondo blanco, borde inferior sutil
+
+
+
+Cards de Producto:
+
+
+
+
+
+Border radius: 12px
+
+
+
+Box shadow suave
+
+
+
+Hover: elevación sutil
+
+
+
+Precio en negrita, grande
+
+
+
+Botones:
+
+
+
+
+
+Primario: Fondo negro, texto blanco
+
+
+
+Secundario: Borde negro, texto negro
+
+
+
+Border radius: 8px
+
+
+
+Hover: transformación sutil
+
+
+
+Carrito Lateral:
+
+
+
+
+
+Slide-in desde derecha
+
+
+
+Fondo blanco
+
+
+
+Overlay oscuro (backdrop)
+
+
+
+Botón "Proceder al pago" sticky bottom
+
+
+
+Tarjeta de Fidelización:
+
+
+
+
+
+Diseño tipo tarjeta bancaria
+
+
+
+Gradiente plateado
+
+
+
+Bordes redondeados
+
+
+
+Logo monno watermark
+
+Animaciones y Micro-interacciones:
+
+
+
+
+
+Transiciones: 200-300ms ease-in-out
+
+
+
+Añadir al carrito: Producto "vuela" hacia icono carrito
+
+
+
+Desbloqueo de insignia: Confetti + modal celebratorio
+
+
+
+Carga de página: Skeleton screens
+
+
+
+Botones: Scale en hover (1.02-1.05)
+
+FUNCIONALIDADES PWA
+
+
+
+
+
+Instalable: Manifest.json completo
+
+
+
+Offline: Service worker con cache de assets críticos
+
+
+
+App-like: Sin barra de navegador en móvil
+
+
+
+Splash screen: Logo monno sobre fondo blanco
+
+
+
+Icon: Asterisco negro en diferentes tamaños (192x192, 512x512)
+
+PANTALLAS PRINCIPALES
+
+
+
+
+
+Home/Landing: Hero con logo, CTA "Hacer pedido", acceso rápido
+
+
+
+Menú: Navegación por categorías + productos
+
+
+
+Carrito: Resumen, modificación, checkout
+
+
+
+Checkout: Pago, propina, confirmación
+
+
+
+Perfil: Info usuario, puntos, insignias, historial
+
+
+
+Fidelización: Tarjeta virtual, recompensas, progreso
+
+
+
+Pedido Confirmado: Número orden, tiempo estimado, tracking
+
+
+
+Admin Dashboard: Pedidos, productos, estadísticas
+
+DATOS DE EJEMPLO/TESTING
+
+
+
+
+
+Usuario de prueba:
+
+
+
+
+
+Nombre: Ana García
+
+
+
+Email: ana@example.com
+
+
+
+Puntos: 75 (nivel Plata)
+
+
+
+Favorito: Iced Pistachio
+
+
+
+Insignias: Primer Café, Explorador, Fiel
+
+
+
+Admin:
+
+
+
+
+
+Email: admin@monno.com
+
+
+
+Password: monno2024
+
+
+
+Pedidos de ejemplo: 3-5 pedidos históricos pre-cargados
+
+PRIORIDADES DE DESARROLLO
+
+Fase 1 - Core (Imprescindible):
+
+
+
+
+
+Menú digital con productos
+
+
+
+Sistema de carrito
+
+
+
+Flujo de pedido completo
+
+
+
+Autenticación básica
+
+
+
+Sistema de puntos
+
+Fase 2 - Engagement:
+
+
+
+
+
+Gamificación completa
+
+
+
+Notificaciones
+
+
+
+Panel admin
+
+Fase 3 - Polish:
+
+
+
+
+
+Animaciones
+
+
+
+PWA features
+
+
+
+Optimizaciones
+
+ENTREGABLES FINALES
+
+
+
+
+
+Código fuente completo (GitHub repo)
+
+
+
+Aplicación desplegada (Vercel/Netlify)
+
+
+
+Documentación técnica:
+
+
+
+
+
+README con instrucciones
+
+
+
+Arquitectura del sistema
+
+
+
+Diagramas de flujo
+
+
+
+Manual de usuario (PDF)
+
+
+
+Presentación demo (video o slides)
+
+NOTAS IMPORTANTES
+
+
+
+
+
+Priorizar funcionalidad sobre complejidad visual en primera iteración
+
+
+
+Mobile-first design (80% usuarios móvil)
+
+
+
+Accesibilidad: Contraste adecuado, textos legibles, navegación por teclado
+
+
+
+Performance: Lighthouse score >90
+
+
+
+Sin backend real si complica: Usar localStorage + JSON para MVP
+
+
+
+Foco en UX fluida: Mínimo 2 clicks para completar pedido

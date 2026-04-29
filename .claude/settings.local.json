@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C C:/Users/Guillem/Desktop/monnopwa log --oneline)",
+      "Bash(npx vite build:*)",
+      "Bash(npx:*)",
+      "Bash(node -e:*)",
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(for f in src/components/Toast.jsx src/pages/Cart.jsx src/pages/Menu.jsx src/pages/OrderHistory.jsx src/pages/Login.jsx src/pages/Checkout.jsx src/pages/admin/AdminDashboard.jsx src/components/NotificationPanel.jsx)",
+      "Bash(do echo -n \"$f: \")",
+      "Bash(done)",
+      "Bash(ls:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(curl:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

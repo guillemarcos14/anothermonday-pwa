@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #679974;
+  --color-brand-dark: #3D6B52;
+  --color-brand-bg: #F6F5F1;
+  --color-brand-black: #2E2D38;
+  --color-brand-white: #FFFFFF;
+  --color-brand-gray: #E8E7E3;
+  --color-brand-lightGreen: #EAF2EB;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F6F5F1;
+  color: #2E2D38;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+button {
+  transition: all 200ms ease;
+}
+button:active {
+  transform: scale(0.98);
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Desktop adaptations ── */
+@media (min-width: 768px) {
+  button:active {
+    transform: none;
+  }
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .desktop-shell {
+    background-color: #EDECEA;
+    background-image: radial-gradient(circle at 1px 1px, #ddd 1px, transparent 0);
+    background-size: 24px 24px;
+    min-height: 100dvh;
+  }
+}
