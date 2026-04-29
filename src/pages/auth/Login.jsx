@@ -62,45 +62,54 @@ export default function Login() {
     setError('')
     setLoading(true)
 
-    const { data, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-
-    if (authError) {
-      setError(authError.message)
-      setLoading(false)
-      return
-    }
-
-    const user = data.user
-    if (user) {
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      // Login automático tras el registro (salta confirmación de email)
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+    try {
+      const { data, error: authError } = await supabase.auth.signUp({
         email,
         password,
       })
-      if (signInError) throw signInError
 
-      const profileData = {
-        id: user.id,
-        name,
-        email: user.email,
-        poblacion,
-        birthday,
-        points: 0,
-        tier: 'Bronce',
+      if (authError) {
+        setError(authError.message)
+        setLoading(false)
+        return
       }
 
-      const { error: profileError } = await supabase.from('profiles').insert(profileData)
+      const user = data.user
+      if (user) {
+        await new Promise(resolve => setTimeout(resolve, 500))
 
-      if (profileError) console.error('Profile error:', profileError)
-      else useUserStore.getState().setProfile(profileData)
+        // Login automático tras el registro (salta confirmación de email)
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        if (signInError) {
+          setError(signInError.message)
+          setLoading(false)
+          return
+        }
+
+        const profileData = {
+          id: user.id,
+          name,
+          email: user.email,
+          poblacion,
+          birthday,
+          points: 0,
+          tier: 'Bronce',
+        }
+
+        const { error: profileError } = await supabase.from('profiles').insert(profileData)
+
+        if (profileError) console.error('Profile error:', profileError)
+        else useUserStore.getState().setProfile(profileData)
+      }
+
+      navigate('/home')
+    } catch (err) {
+      setError(err.message || 'Error al crear la cuenta')
+      setLoading(false)
     }
-
-    navigate('/home')
   }
 
   const handleSubmit = mode === 'login' ? handleLogin : handleRegister

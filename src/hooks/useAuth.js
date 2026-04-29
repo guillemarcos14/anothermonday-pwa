@@ -23,34 +23,51 @@ export function useAuth() {
   const { setProfile, clearProfile } = useUserStore()
 
   useEffect(() => {
+    let cancelled = false
+
     // Safety timeout — stop loading after 5s even if Supabase never responds
     const safetyTimeout = setTimeout(() => {
-      console.warn('[useAuth] Timeout: forcing loading=false after 5s')
-      setLoading(false)
+      if (!cancelled) {
+        console.warn('[useAuth] Timeout: forcing loading=false after 5s')
+        setLoading(false)
+      }
     }, 5000)
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      clearTimeout(safetyTimeout)
-      setSession(session)
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        fetchProfile(session.user.id).then((profile) => {
-          if (profile) {
-            setProfile(profile)
-          } else {
-            setProfile({ id: session.user.id, email: session.user.email, points: 0, tier: 'Bronce' })
-          }
-        })
-      }
-      setLoading(false)
-    })
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (cancelled) return
+        clearTimeout(safetyTimeout)
+        setSession(session)
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          fetchProfile(session.user.id).then((profile) => {
+            if (cancelled) return
+            if (profile) {
+              setProfile(profile)
+            } else {
+              setProfile({ id: session.user.id, email: session.user.email, points: 0, tier: 'Bronce' })
+            }
+          })
+        }
+        setLoading(false)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        clearTimeout(safetyTimeout)
+        console.error('[useAuth] getSession failed:', err)
+        setUser(null)
+        setSession(null)
+        setLoading(false)
+      })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        if (cancelled) return
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
           const profile = await fetchProfile(session.user.id)
+          if (cancelled) return
           if (profile) {
             setProfile(profile)
           } else {
@@ -65,6 +82,7 @@ export function useAuth() {
     )
 
     return () => {
+      cancelled = true
       clearTimeout(safetyTimeout)
       subscription.unsubscribe()
     }
