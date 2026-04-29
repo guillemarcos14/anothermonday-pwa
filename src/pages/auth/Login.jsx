@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useUserStore } from '../../store/userStore'
 
 const inputClass =
-  'w-full py-3 px-5 bg-transparent text-brand-black border border-brand-gray rounded-full focus:outline-none focus:border-brand-green placeholder:text-brand-black/30 text-sm'
+  'w-full py-3 px-5 bg-transparent text-white border border-white/40 rounded-full focus:outline-none focus:border-brand-green placeholder:text-white/60 text-sm'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -115,15 +115,16 @@ export default function Login() {
   const handleSubmit = mode === 'login' ? handleLogin : handleRegister
 
   return (
-    <div className="min-h-[100dvh] flex flex-col px-8 justify-center md:items-center" style={{ backgroundColor: '#F6F5F1', paddingBottom: '12dvh' }}>
+    <div className="relative min-h-[100dvh] flex flex-col px-8 justify-center md:items-center overflow-hidden" style={{ paddingBottom: '12dvh' }}>
+      <div className="fixed inset-0 -z-10" style={{ background: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/fondomobile.jpg') center/cover no-repeat", filter: 'blur(12px)', transform: 'scale(1.1)' }} />
       <div className="md:bg-white md:rounded-3xl md:p-12 md:shadow-xl md:max-w-[480px] md:w-full">
       {/* Title */}
-      <h1 style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px', letterSpacing: '-1px', color: '#679974' }}>
+      <h1 style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '35px', letterSpacing: '-1px', color: '#679974' }}>
         Another Monday
       </h1>
 
       {/* Subtitle */}
-      <p className="text-brand-black/50 text-sm mt-3 max-w-[280px]">
+      <p className="text-white text-sm mt-3 max-w-[280px]">
         Pide con antelación, recoge sin esperas y acumula recompensas en cada visita.
       </p>
 
@@ -176,14 +177,14 @@ export default function Login() {
 
         <button
           type="button"
-          className="text-xs text-brand-black/40 self-start"
+          className="text-xs text-white/60 self-start"
         >
           ¿Has olvidado tu contraseña?
         </button>
       </form>
 
       {/* Bottom buttons */}
-      <div className="fixed bottom-0 left-0 right-0 px-8 pb-10 flex gap-3 md:static md:mt-8 md:pb-0 md:px-0" style={{ backgroundColor: '#F6F5F1' }}>
+      <div className="fixed bottom-0 left-0 right-0 px-8 pb-10 flex gap-3 md:static md:mt-8 md:pb-0 md:px-0">
         <button
           type="button"
           onClick={(e) => {
@@ -194,7 +195,7 @@ export default function Login() {
           className={`flex-1 py-3.5 font-semibold rounded-full text-sm transition-colors disabled:opacity-50 ${
             mode === 'login'
               ? 'bg-brand-green text-white hover:bg-brand-dark'
-              : 'text-brand-black/60'
+              : 'text-white/80'
           }`}
         >
           {mode === 'login' && loading ? 'Entrando...' : 'Iniciar Sesión'}
@@ -209,7 +210,7 @@ export default function Login() {
           className={`flex-1 py-3.5 font-semibold rounded-full text-sm transition-colors disabled:opacity-50 ${
             mode === 'register'
               ? 'bg-brand-green text-white hover:bg-brand-dark'
-              : 'text-brand-black/60'
+              : 'text-white/80'
           }`}
         >
           {mode === 'register' && loading ? 'Creando...' : 'Crear Cuenta'}
