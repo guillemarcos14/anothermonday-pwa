@@ -569,24 +569,27 @@ export default function Orders() {
 
       {/* Modal Hora */}
       {showHoraModal && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center" onClick={() => setShowHoraModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-end" onClick={() => setShowHoraModal(false)}>
           <div className="absolute inset-0 bg-black/40" />
           <div
-            className="relative w-full bg-white rounded-t-2xl max-h-[70vh] flex flex-col md:max-w-[400px] md:rounded-2xl md:mx-4"
+            className="relative w-full bg-white rounded-t-2xl max-h-[60vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-5 pt-5 pb-3">
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 rounded-full bg-brand-black/15" />
+            </div>
+            <div className="px-5 pt-2 pb-3">
               <h2 className="text-brand-black text-lg font-bold">Hora de Recogida</h2>
             </div>
-            <div className="overflow-y-auto px-5 pb-5">
+            <div className="overflow-y-auto px-5 pb-8 grid grid-cols-3 gap-2">
               {getHorasDisponibles().map((h) => (
                 <button
                   key={h}
                   onClick={() => { setHora(h); setShowHoraModal(false) }}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium mb-1 ${
+                  className={`px-3 py-3 rounded-xl text-sm font-medium text-center ${
                     hora === h
                       ? 'bg-brand-green text-white'
-                      : 'text-brand-black hover:bg-brand-bg'
+                      : 'bg-brand-bg text-brand-black'
                   }`}
                 >
                   {h}

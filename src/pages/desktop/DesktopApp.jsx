@@ -256,14 +256,14 @@ export default function DesktopApp() {
           </p>
           <button
             onClick={() => document.getElementById('productos-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="mt-5 bg-brand-green text-white font-semibold text-sm px-6 py-3 rounded-xl w-fit hover:bg-brand-dark transition-colors"
+            className="relative z-30 mt-5 bg-brand-green text-white font-semibold text-sm px-6 py-3 rounded-xl w-fit hover:bg-brand-dark transition-colors cursor-pointer"
           >
             Hacer pedido
           </button>
         </div>
 
         {/* QR — escanear para abrir la app en móvil */}
-        <div className="absolute bottom-16 right-0 left-0 z-20 max-w-[1400px] mx-auto px-8 flex justify-end">
+        <div className="absolute bottom-16 right-0 left-0 z-20 max-w-[1400px] mx-auto px-8 flex justify-end pointer-events-none">
         <div className="flex flex-col items-center gap-2">
           <div className="bg-white rounded-2xl p-3 shadow-lg">
             <QRCodeSVG
@@ -458,10 +458,10 @@ export default function DesktopApp() {
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative bg-white rounded-2xl max-w-[400px] w-full max-h-[70vh] flex flex-col mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 pt-5 pb-3"><h2 className="text-brand-black text-lg font-bold">Hora de Recogida</h2></div>
-            <div className="overflow-y-auto px-5 pb-5">
+            <div className="overflow-y-auto px-5 pb-5 grid grid-cols-3 gap-2">
               {getHorasDisponibles().map((h) => (
                 <button key={h} onClick={() => { setHora(h); setShowHoraModal(false) }}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium mb-1 ${hora === h ? 'bg-brand-green text-white' : 'text-brand-black hover:bg-brand-bg'}`}
+                  className={`px-3 py-3 rounded-xl text-sm font-medium text-center ${hora === h ? 'bg-brand-green text-white' : 'bg-brand-bg text-brand-black'}`}
                 >{h}</button>
               ))}
             </div>
