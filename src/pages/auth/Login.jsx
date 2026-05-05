@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useUserStore } from '../../store/userStore'
 
 const inputClass =
-  'w-full py-3 px-5 bg-transparent text-white border border-white/40 rounded-full focus:outline-none focus:border-brand-green placeholder:text-white/60 text-sm'
+  'w-full py-3 px-5 bg-transparent text-white md:text-[#2E2D38] border border-white/40 md:border-[#2E2D38]/30 rounded-full focus:outline-none focus:border-brand-green placeholder:text-white/60 md:placeholder:text-[#2E2D38]/50 text-sm'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -16,10 +16,25 @@ export default function Login() {
   const [birthday, setBirthday] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [resetMsg, setResetMsg] = useState(null)
 
   const switchMode = (newMode) => {
     setMode(newMode)
     setError('')
+    setResetMsg(null)
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      setResetMsg({ type: 'error', text: 'Introduce tu email primero' })
+      return
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    if (error) {
+      setResetMsg({ type: 'error', text: error.message })
+    } else {
+      setResetMsg({ type: 'success', text: 'Te hemos enviado un email para restablecer tu contraseña' })
+    }
   }
 
   const handleLogin = async (e) => {
@@ -116,15 +131,18 @@ export default function Login() {
 
   return (
     <div className="relative min-h-[100dvh] flex flex-col px-8 justify-center md:items-center overflow-hidden" style={{ paddingBottom: '12dvh' }}>
-      <div className="fixed inset-0 -z-10" style={{ background: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/fondomobile.jpg') center/cover no-repeat", filter: 'blur(12px)', transform: 'scale(1.1)' }} />
-      <div className="md:bg-white md:rounded-3xl md:p-12 md:shadow-xl md:max-w-[480px] md:w-full">
+      {/* Mobile background */}
+      <div className="fixed inset-0 z-0 md:hidden" style={{ background: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/fondomobile.jpg') center/cover no-repeat", filter: 'blur(12px)', transform: 'scale(1.1)' }} />
+      {/* Desktop background */}
+      <div className="fixed inset-0 z-0 hidden md:block" style={{ background: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/fondodesktop.webp') center/cover no-repeat", filter: 'blur(12px)', transform: 'scale(1.1)' }} />
+      <div className="relative z-10 md:bg-white md:rounded-3xl md:p-12 md:shadow-xl md:max-w-[480px] md:w-full">
       {/* Title */}
       <h1 style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '35px', letterSpacing: '-1px', color: '#679974' }}>
         Another Monday
       </h1>
 
       {/* Subtitle */}
-      <p className="text-white text-sm mt-3 max-w-[280px]">
+      <p className="text-white md:text-[#2E2D38] text-sm mt-3 max-w-[280px]">
         Pide con antelación, recoge sin esperas y acumula recompensas en cada visita.
       </p>
 
@@ -153,6 +171,15 @@ export default function Login() {
           <>
             <input
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass}
+              placeholder="Nombre"
+              required
+            />
+
+            <input
+              type="text"
               value={poblacion}
               onChange={(e) => setPoblacion(e.target.value)}
               className={inputClass}
@@ -175,16 +202,23 @@ export default function Login() {
           <p className="text-red-500 text-sm">{error}</p>
         )}
 
+        {resetMsg && (
+          <p className={`text-sm ${resetMsg.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+            {resetMsg.text}
+          </p>
+        )}
+
         <button
           type="button"
-          className="text-xs text-white/60 self-start"
+          onClick={handleForgotPassword}
+          className="text-xs text-white/60 md:text-[#2E2D38]/50 self-start"
         >
           ¿Has olvidado tu contraseña?
         </button>
       </form>
 
       {/* Bottom buttons */}
-      <div className="fixed bottom-0 left-0 right-0 px-8 pb-10 flex gap-3 md:static md:mt-8 md:pb-0 md:px-0">
+      <div className="fixed bottom-0 left-0 right-0 z-10 px-8 pb-10 flex gap-3 md:static md:mt-8 md:pb-0 md:px-0">
         <button
           type="button"
           onClick={(e) => {
@@ -195,7 +229,7 @@ export default function Login() {
           className={`flex-1 py-3.5 font-semibold rounded-full text-sm transition-colors disabled:opacity-50 ${
             mode === 'login'
               ? 'bg-brand-green text-white hover:bg-brand-dark'
-              : 'text-white/80'
+              : 'text-white/80 md:text-[#2E2D38]/70'
           }`}
         >
           {mode === 'login' && loading ? 'Entrando...' : 'Iniciar Sesión'}
@@ -210,7 +244,7 @@ export default function Login() {
           className={`flex-1 py-3.5 font-semibold rounded-full text-sm transition-colors disabled:opacity-50 ${
             mode === 'register'
               ? 'bg-brand-green text-white hover:bg-brand-dark'
-              : 'text-white/80'
+              : 'text-white/80 md:text-[#2E2D38]/70'
           }`}
         >
           {mode === 'register' && loading ? 'Creando...' : 'Crear Cuenta'}

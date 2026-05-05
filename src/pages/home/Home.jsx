@@ -7,7 +7,7 @@ import { usePoints } from '../../hooks/usePoints'
 import PageWrapper from '../../components/layout/PageWrapper'
 import DesktopApp from '../desktop/DesktopApp'
 const IconCupSoda = ({ size = 60, color = 'white' }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8"/>
     <path d="M5 8h14"/>
     <path d="M7 15a6.47 6.47 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/>
@@ -16,7 +16,7 @@ const IconCupSoda = ({ size = 60, color = 'white' }) => (
 )
 
 const IconScanLine = ({ size = 60, color = 'white' }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
     <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
     <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
@@ -49,7 +49,7 @@ const IconPlus = ({ size = 20, color = 'white' }) => (
 
 export default function Home() {
   const navigate = useNavigate()
-  const { points } = usePoints()
+  const { points, currentTier, nextTierName, pointsToNext, progress } = usePoints()
 
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -71,15 +71,8 @@ export default function Home() {
     <PageWrapper className="!pb-0 md:!hidden">
       {/* Header */}
       <div className="bg-white px-5 pt-6 pb-3 flex items-center justify-between" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-        <span style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '18px', letterSpacing: '-1px', color: '#2E2D38' }}>Another Monday</span>
+        <span style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '21px', letterSpacing: '-1px', color: '#2E2D38' }}>Another Monday</span>
         <div className="flex items-center gap-0.5">
-          {/* Notification bell */}
-          <button className="w-9 h-9 flex items-center justify-center">
-            <svg width="22" height="22" fill="none" stroke="#2E2D38" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 01-3.46 0" />
-            </svg>
-          </button>
           {/* Menu dots */}
           <div className="relative">
             <button
@@ -118,35 +111,43 @@ export default function Home() {
         {/* Points Card */}
         <button
           onClick={() => navigate('/points')}
-          className="relative bg-[#679974] py-5 pl-5 pr-7 text-left w-full"
-          style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px' }}
+          className="relative overflow-hidden p-5 text-left w-full"
+          style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}
         >
-          <div className="flex flex-col justify-end h-full">
-            <p className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Mis Puntos</p>
-            <div className="flex items-center justify-between">
-              <p className="text-white" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '30px', letterSpacing: '0px' }}>{points} pts</p>
-              <IconArrowRight />
-            </div>
+          <p className="text-white" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>Nivel {currentTier.name}</p>
+          <p className="text-white text-sm font-semibold mt-0.5">
+            {points} / {currentTier.maxPoints} pts
+          </p>
+          <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden mt-3">
+            <div
+              className="h-full bg-white rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
           </div>
+          <p className="text-white/70 text-xs mt-2">
+            {nextTierName
+              ? `Te faltan ${pointsToNext} pts para ${nextTierName}`
+              : 'Has alcanzado el nivel máximo'}
+          </p>
         </button>
 
         {/* Quick Actions Grid */}
         <div className="grid grid-cols-2 gap-6">
           <button
             onClick={() => navigate('/orders')}
-            className="bg-[#679974] p-4 flex flex-col items-center justify-center gap-1.5"
-            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px' }}
+            className="overflow-hidden p-4 flex flex-col items-center justify-center gap-1.5"
+            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}
           >
-            <IconCupSoda size={48} />
+            <IconCupSoda size={42} />
             <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Pick & Go</span>
           </button>
 
           <button
             onClick={() => navigate('/qr')}
-            className="bg-[#679974] p-4 flex flex-col items-center justify-center gap-1.5"
-            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px' }}
+            className="overflow-hidden p-4 flex flex-col items-center justify-center gap-1.5"
+            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}
           >
-            <IconScanLine size={48} />
+            <IconScanLine size={42} />
             <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Mi QR</span>
           </button>
         </div>
@@ -157,7 +158,7 @@ export default function Home() {
           <div className="flex justify-center pt-3 pb-1">
             <div className="w-[70px] h-1 rounded-full bg-[#DFE4EC]" />
           </div>
-          <h2 className="px-6 pt-3 pb-5 text-[#2E2D38]"><span style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '18px', letterSpacing: '-1px' }}>Another Monday</span>{' '}<span style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: '16px' }}>News</span></h2>
+          <h2 className="px-6 pt-3 pb-5 text-[#2E2D38]"><span style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '20px', letterSpacing: '-1px' }}>Another Monday</span>{' '}<span style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: '16px' }}>News</span></h2>
           <div className="px-5 relative">
             <img
               src="/news.jpg"

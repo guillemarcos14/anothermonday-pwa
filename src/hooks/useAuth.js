@@ -51,10 +51,12 @@ export function useAuth() {
         }
         setLoading(false)
       })
-      .catch((err) => {
+      .catch(async (err) => {
         if (cancelled) return
         clearTimeout(safetyTimeout)
         console.error('[useAuth] getSession failed:', err)
+        // Clear stale tokens so the error doesn't repeat on next visit
+        await supabase.auth.signOut().catch(() => {})
         setUser(null)
         setSession(null)
         setLoading(false)

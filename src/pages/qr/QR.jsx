@@ -88,8 +88,8 @@ export default function QR() {
         </div>
 
         {/* Points Card — same as Mis Puntos screen */}
-        <div className="w-full bg-brand-green p-5 text-white mt-5" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px' }}>
-          <p style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>{currentTier.name}</p>
+        <div className="w-full overflow-hidden p-5 text-white mt-5" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}>
+          <p style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>Nivel {currentTier.name}</p>
           <p className="text-white text-sm font-semibold mt-0.5">
             {points} / {currentTier.maxPoints} pts
           </p>

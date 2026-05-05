@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { QRCodeSVG } from 'qrcode.react'
 import { useAuthStore } from '../../store/authStore'
 import { useUserStore } from '../../store/userStore'
 import { supabase } from '../../lib/supabase'
@@ -61,6 +62,14 @@ function getHorasDisponibles() {
 /* ── Product Card ── */
 function ProductCard({ product, qty, onAdd, onRemove }) {
   const isFood = COMIDA_IDS.has(product.id)
+  const [justAdded, setJustAdded] = useState(false)
+
+  const handleAdd = () => {
+    onAdd()
+    setJustAdded(true)
+    setTimeout(() => setJustAdded(false), 1200)
+  }
+
   return (
     <div
       className="bg-white rounded-2xl overflow-hidden text-left transition-shadow hover:shadow-lg flex flex-col"
@@ -80,10 +89,10 @@ function ProductCard({ product, qty, onAdd, onRemove }) {
           <p className="text-brand-black/50 text-sm font-medium">{product.precio.toFixed(2)} €</p>
           {qty === 0 ? (
             <button
-              onClick={onAdd}
-              className="px-5 py-2 rounded-full bg-brand-green text-white text-sm font-medium"
+              onClick={handleAdd}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${justAdded ? 'bg-emerald-600 text-white' : 'bg-brand-green text-white'}`}
             >
-              Añadir
+              {justAdded ? 'Añadido ✓' : 'Añadir'}
             </button>
           ) : (
             <div className="flex items-center gap-3">
@@ -95,7 +104,7 @@ function ProductCard({ product, qty, onAdd, onRemove }) {
               </button>
               <span className="text-sm font-semibold text-brand-black w-4 text-center">{qty}</span>
               <button
-                onClick={onAdd}
+                onClick={handleAdd}
                 className="w-8 h-8 rounded-full bg-brand-green text-white flex items-center justify-center text-base leading-none"
               >
                 +
@@ -117,7 +126,13 @@ export default function DesktopApp() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   /* ── Cart / Order state ── */
-  const [carrito, setCarrito] = useState({})
+  const [carrito, setCarrito] = useState(() => {
+    try {
+      const saved = localStorage.getItem('carrito')
+      if (saved) return JSON.parse(saved)
+    } catch {}
+    return {}
+  })
   const [hora, setHora] = useState(() => getHorasDisponibles()[0] || '20:00')
   const [tienda, setTienda] = useState({ nombre: 'Poble Nou', ciudad: 'Barcelona' })
   const [showHoraModal, setShowHoraModal] = useState(false)
@@ -135,6 +150,10 @@ export default function DesktopApp() {
   const [tarjetas] = useState([{ id: 1, nombre: 'Mi Tarjeta', ultimos4: '4532' }])
   const [tarjetaActiva, setTarjetaActiva] = useState(1)
 
+
+  useEffect(() => {
+    try { localStorage.setItem('carrito', JSON.stringify(carrito)) } catch {}
+  }, [carrito])
 
   /* ── Cart helpers ── */
   const todosProductos = Object.values(PRODUCTOS).flat()
@@ -190,11 +209,11 @@ export default function DesktopApp() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-brand-bg">
+    <div className="min-h-[100dvh]">
 
       {/* ═══ Hero Banner (full viewport) ═══ */}
       <div className="relative w-full h-[100dvh] overflow-hidden">
-        <img src="/fondo-desktop.jpg" alt="Another Monday" className="absolute inset-0 w-full h-full object-cover object-top blur-[2px]" />
+        <img src="/fondodesktop.webp" alt="Another Monday" className="absolute inset-0 w-full h-full object-cover object-top" style={{ filter: 'blur(12px)', transform: 'scale(1.1)' }} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
 
         {/* Header (overlay on banner) */}
@@ -202,12 +221,6 @@ export default function DesktopApp() {
           <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between">
             <span style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '20px', letterSpacing: '-1px', color: '#FFFFFF' }}>Another Monday</span>
             <div className="flex items-center gap-1">
-              <button className="w-9 h-9 flex items-center justify-center">
-                <svg width="22" height="22" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                  <path d="M13.73 21a2 2 0 01-3.46 0" />
-                </svg>
-              </button>
               <div className="relative">
                 <button onClick={() => setMenuOpen((v) => !v)} className="w-9 h-9 flex items-center justify-center">
                   <IconEllipsisVertical color="white" />
@@ -235,7 +248,7 @@ export default function DesktopApp() {
         {/* Banner text */}
         <div className="relative z-10 flex flex-col justify-end h-full max-w-[1400px] mx-auto px-8 pb-16">
           <p className="text-white/80 text-sm font-medium tracking-wide uppercase mb-2">Pide y recoge sin esperas</p>
-          <h1 className="text-white text-5xl leading-tight" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, letterSpacing: '-1px' }}>
+          <h1 className="text-white leading-tight" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, letterSpacing: '-1px', fontSize: '3.75rem' }}>
             Another Monday
           </h1>
           <p className="text-white/70 text-lg mt-2 max-w-md">
@@ -245,8 +258,24 @@ export default function DesktopApp() {
             onClick={() => document.getElementById('productos-section')?.scrollIntoView({ behavior: 'smooth' })}
             className="mt-5 bg-brand-green text-white font-semibold text-sm px-6 py-3 rounded-xl w-fit hover:bg-brand-dark transition-colors"
           >
-            Hacer pedido →
+            Hacer pedido
           </button>
+        </div>
+
+        {/* QR — escanear para abrir la app en móvil */}
+        <div className="absolute bottom-16 right-0 left-0 z-20 max-w-[1400px] mx-auto px-8 flex justify-end">
+        <div className="flex flex-col items-center gap-2">
+          <div className="bg-white rounded-2xl p-3 shadow-lg">
+            <QRCodeSVG
+              value="https://pwa-omega-ruby.vercel.app/"
+              size={100}
+              bgColor="#FFFFFF"
+              fgColor="#1D4D4F"
+              level="M"
+            />
+          </div>
+          <span className="text-white/70 text-xs font-medium text-center max-w-[120px] leading-snug">Escaneo esto. En el móvil hits different.</span>
+        </div>
         </div>
       </div>
 
@@ -255,14 +284,6 @@ export default function DesktopApp() {
         <div id="productos-section" className="pt-20">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-brand-black text-[40px] font-semibold" style={{ fontFamily: "'Instrument Serif', serif" }}>Nuestros Productos</h2>
-            {totalItems > 0 && (
-              <button
-                onClick={() => setShowCart(true)}
-                className="bg-brand-green text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-brand-dark transition-colors"
-              >
-                Ver Carrito — {totalPrecio.toFixed(2)} €
-              </button>
-            )}
           </div>
 
           <div className="grid grid-cols-4 gap-5 pb-10">
@@ -280,6 +301,25 @@ export default function DesktopApp() {
 
       </div>
 
+      {/* ═══ Fixed Cart Bar ═══ */}
+      {totalItems > 0 && !showCart && !showConfirmation && (
+        <div className="fixed bottom-0 left-0 right-0 z-40">
+          <div className="max-w-[1400px] mx-auto px-8 pb-6">
+            <button
+              onClick={() => setShowCart(true)}
+              className="w-full bg-brand-green hover:bg-brand-dark transition-colors text-white rounded-2xl px-6 py-4 flex items-center justify-between shadow-xl"
+              style={{ boxShadow: '0 -2px 20px rgba(0,0,0,0.15)' }}
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">{totalItems}</span>
+                <span className="font-semibold text-base">Ver Carrito</span>
+              </div>
+              <span className="font-bold text-base">{totalPrecio.toFixed(2)} €</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ═══ Cart Modal ═══ */}
       {showCart && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -294,75 +334,89 @@ export default function DesktopApp() {
               </button>
             </div>
 
-            {/* Pickup info */}
-            <div className="px-6 pt-4 flex gap-4">
-              <button onClick={() => setShowHoraModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
-                <p className="text-brand-black/40 text-xs mb-0.5">Hora</p>
-                <p className="text-brand-black font-semibold text-sm">{hora}</p>
-              </button>
-              <button onClick={() => setShowTiendaModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
-                <p className="text-brand-black/40 text-xs mb-0.5">Tienda</p>
-                <p className="text-brand-black font-semibold text-sm">{tienda.nombre}</p>
-              </button>
-            </div>
-
-            {/* Cart items */}
-            <div className="px-6 pt-4 flex flex-col">
-              {itemsCarrito.map((item) => (
-                <div key={item.id} className="flex items-center gap-3 py-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-lightGreen shrink-0 flex items-center justify-center">
-                    {COMIDA_IDS.has(item.id) ? <IconComida size={20} /> : <IconCafe size={20} />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-brand-black text-sm font-bold truncate">{item.nombre}</p>
-                    <p className="text-brand-black/50 text-xs">{item.precio.toFixed(2)} €</p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button onClick={() => quitar(item.id)} className="w-7 h-7 rounded-full border border-brand-green text-brand-green flex items-center justify-center text-sm leading-none">−</button>
-                    <span className="text-sm font-semibold text-brand-black w-4 text-center">{item.qty}</span>
-                    <button onClick={() => añadir(item.id)} className="w-7 h-7 rounded-full bg-brand-green text-white flex items-center justify-center text-sm leading-none">+</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Total + Payment */}
-            <div className="px-6 pt-3 pb-2 flex items-center justify-between border-t border-[#E8E7E3] mt-2">
-              <p className="text-brand-black font-bold text-base">Total</p>
-              <p className="text-brand-black font-bold text-base">{totalPrecio.toFixed(2)} €</p>
-            </div>
-
-            <div className="px-6 pb-2">
-              <p className="text-brand-black text-sm font-bold mb-2">Forma de Pago</p>
-              {tarjetas.map((t) => (
+            {itemsCarrito.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 px-6">
+                <p className="text-brand-black/50 text-sm mb-4">Tu carrito está vacío</p>
                 <button
-                  key={t.id}
-                  onClick={() => setTarjetaActiva(t.id)}
-                  className={`w-full rounded-xl px-4 py-3 flex items-center gap-3 mb-2 transition-colors ${tarjetaActiva === t.id ? 'bg-brand-bg ring-2 ring-brand-green' : 'bg-brand-bg'}`}
+                  onClick={() => setShowCart(false)}
+                  className="px-6 py-2.5 rounded-full bg-brand-green text-white text-sm font-medium hover:bg-brand-dark transition-colors"
                 >
-                  <div className="w-14 h-9 rounded-lg bg-gradient-to-r from-[#1D4D4F] to-[#3A7C6E] flex items-center justify-center shrink-0">
-                    <svg width="18" height="14" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" viewBox="0 0 24 18">
-                      <rect x="1" y="1" width="22" height="16" rx="2" /><line x1="1" y1="7" x2="23" y2="7" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-brand-black text-sm font-semibold">{t.nombre}</p>
-                    <p className="text-brand-black/40 text-xs">•••• {t.ultimos4}</p>
-                  </div>
-                  {tarjetaActiva === t.id && (
-                    <svg width="18" height="18" fill="none" stroke="#679974" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
+                  Explorar productos
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <>
+                {/* Pickup info */}
+                <div className="px-6 pt-4 flex gap-4">
+                  <button onClick={() => setShowHoraModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
+                    <p className="text-brand-black/40 text-xs mb-0.5">Hora</p>
+                    <p className="text-brand-black font-semibold text-sm">{hora}</p>
+                  </button>
+                  <button onClick={() => setShowTiendaModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
+                    <p className="text-brand-black/40 text-xs mb-0.5">Tienda</p>
+                    <p className="text-brand-black font-semibold text-sm">{tienda.nombre}</p>
+                  </button>
+                </div>
 
-            <div className="px-6 pb-6">
-              <button onClick={handlePagar} className="w-full bg-brand-green text-white font-bold text-base py-4 rounded-2xl shadow-lg hover:bg-brand-dark transition-colors">
-                Pagar — {totalPrecio.toFixed(2)} €
-              </button>
-            </div>
+                {/* Cart items */}
+                <div className="px-6 pt-4 flex flex-col">
+                  {itemsCarrito.map((item) => (
+                    <div key={item.id} className="flex items-center gap-3 py-3">
+                      <div className="w-10 h-10 rounded-full bg-brand-lightGreen shrink-0 flex items-center justify-center">
+                        {COMIDA_IDS.has(item.id) ? <IconComida size={20} /> : <IconCafe size={20} />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-brand-black text-sm font-bold truncate">{item.nombre}</p>
+                        <p className="text-brand-black/50 text-xs">{item.precio.toFixed(2)} €</p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button onClick={() => quitar(item.id)} className="w-7 h-7 rounded-full border border-brand-green text-brand-green flex items-center justify-center text-sm leading-none">−</button>
+                        <span className="text-sm font-semibold text-brand-black w-4 text-center">{item.qty}</span>
+                        <button onClick={() => añadir(item.id)} className="w-7 h-7 rounded-full bg-brand-green text-white flex items-center justify-center text-sm leading-none">+</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Total + Payment */}
+                <div className="px-6 pt-3 pb-2 flex items-center justify-between border-t border-[#E8E7E3] mt-2">
+                  <p className="text-brand-black font-bold text-base">Total</p>
+                  <p className="text-brand-black font-bold text-base">{totalPrecio.toFixed(2)} €</p>
+                </div>
+
+                <div className="px-6 pb-2">
+                  <p className="text-brand-black text-sm font-bold mb-2">Forma de Pago</p>
+                  {tarjetas.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setTarjetaActiva(t.id)}
+                      className={`w-full rounded-xl px-4 py-3 flex items-center gap-3 mb-2 transition-colors ${tarjetaActiva === t.id ? 'bg-brand-bg ring-2 ring-brand-green' : 'bg-brand-bg'}`}
+                    >
+                      <div className="w-14 h-9 rounded-lg bg-gradient-to-r from-[#1D4D4F] to-[#3A7C6E] flex items-center justify-center shrink-0">
+                        <svg width="18" height="14" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" viewBox="0 0 24 18">
+                          <rect x="1" y="1" width="22" height="16" rx="2" /><line x1="1" y1="7" x2="23" y2="7" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-brand-black text-sm font-semibold">{t.nombre}</p>
+                        <p className="text-brand-black/40 text-xs">•••• {t.ultimos4}</p>
+                      </div>
+                      {tarjetaActiva === t.id && (
+                        <svg width="18" height="18" fill="none" stroke="#679974" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="px-6 pb-6">
+                  <button onClick={handlePagar} className="w-full bg-brand-green text-white font-bold text-base py-4 rounded-2xl shadow-lg hover:bg-brand-dark transition-colors">
+                    Pagar — {totalPrecio.toFixed(2)} €
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

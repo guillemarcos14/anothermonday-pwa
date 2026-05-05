@@ -261,8 +261,8 @@ export default function Points() {
         {/* Tier section: card + selector side by side on desktop */}
         <div className="md:grid md:grid-cols-2 md:gap-8 md:items-center">
         {/* Tier Card */}
-        <div className="bg-brand-green p-5 text-white" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px' }}>
-          <p style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>{currentTier.name}</p>
+        <div className="overflow-hidden p-5 text-white" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}>
+          <p style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>Nivel {currentTier.name}</p>
           <p className="text-white text-sm font-semibold mt-0.5">
             {points} / {currentTier.maxPoints} pts
           </p>
@@ -361,7 +361,7 @@ export default function Points() {
       {/* ── Modal: Ver todos los logros ── */}
       {showAllBadges && (
         <div className="fixed inset-0 z-50 flex flex-col bg-[#F6F5F1] md:bg-black/40 md:items-center md:justify-center">
-          <div className="flex flex-col flex-1 md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:overflow-hidden md:shadow-xl md:bg-[#F6F5F1]">
+          <div className="flex flex-col flex-1 overflow-hidden md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:shadow-xl md:bg-[#F6F5F1]">
           <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between shrink-0" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
             <button onClick={() => setShowAllBadges(false)} className="w-9 h-9 flex items-center justify-center">
               <IconClose size={22} />
@@ -405,7 +405,7 @@ export default function Points() {
       {/* ── Modal: Consigue más puntos (reglas) ── */}
       {showRules && (
         <div className="fixed inset-0 z-50 flex flex-col bg-[#F6F5F1] md:bg-black/40 md:items-center md:justify-center">
-          <div className="flex flex-col flex-1 md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:overflow-hidden md:shadow-xl md:bg-[#F6F5F1]">
+          <div className="flex flex-col flex-1 overflow-hidden md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:shadow-xl md:bg-[#F6F5F1]">
           <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between shrink-0" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
             <button onClick={() => setShowRules(false)} className="w-9 h-9 flex items-center justify-center">
               <IconClose size={22} />

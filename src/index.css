@@ -21,6 +21,27 @@ body {
   color: #2E2D38;
   font-weight: 400;
   line-height: 1.5;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #F6F5F1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url('/grain.svg');
+  background-size: 200px 200px;
+  background-repeat: repeat;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -53,9 +74,6 @@ button:active {
   }
 
   .desktop-shell {
-    background-color: #EDECEA;
-    background-image: radial-gradient(circle at 1px 1px, #ddd 1px, transparent 0);
-    background-size: 24px 24px;
     min-height: 100dvh;
   }
 }
