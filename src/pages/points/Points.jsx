@@ -248,7 +248,7 @@ export default function Points() {
     <PageWrapper>
       {/* Header */}
       <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-        <button onClick={() => navigate(-1)} className="w-9 h-9 flex items-center justify-center">
+        <button onClick={() => navigate(-1)} aria-label="Volver" className="w-9 h-9 flex items-center justify-center">
           <svg width="22" height="22" fill="none" stroke="#2E2D38" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -261,7 +261,7 @@ export default function Points() {
         {/* Tier section: card + selector side by side on desktop */}
         <div className="md:grid md:grid-cols-2 md:gap-8 md:items-center">
         {/* Tier Card */}
-        <div className="overflow-hidden p-5 text-white" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}>
+        <div className="overflow-hidden p-5 text-white" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}>
           <p style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>Nivel {currentTier.name}</p>
           <p className="text-white text-sm font-semibold mt-0.5">
             {points} / {currentTier.maxPoints} pts
@@ -337,7 +337,7 @@ export default function Points() {
                 >
                   <div className="w-11 h-11 flex items-center justify-center">
                     {badge.unlocked ? (
-                      <BadgeIcon size={30} color="#679974" />
+                      <BadgeIcon size={30} color="#46704F" />
                     ) : (
                       <IconLock size={30} color="#1D4D4F" />
                     )}
@@ -363,7 +363,7 @@ export default function Points() {
         <div className="fixed inset-0 z-50 flex flex-col bg-[#F6F5F1] md:bg-black/40 md:items-center md:justify-center">
           <div className="flex flex-col flex-1 overflow-hidden md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:shadow-xl md:bg-[#F6F5F1]">
           <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between shrink-0" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-            <button onClick={() => setShowAllBadges(false)} className="w-9 h-9 flex items-center justify-center">
+            <button onClick={() => setShowAllBadges(false)} aria-label="Cerrar" className="w-9 h-9 flex items-center justify-center">
               <IconClose size={22} />
             </button>
             <h2 className="text-[#2E2D38] absolute left-1/2 -translate-x-1/2" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '16px' }}>Todos los logros</h2>
@@ -379,7 +379,7 @@ export default function Points() {
                   <div key={badge.id} className={`flex items-center gap-4 p-4 rounded-2xl ${badge.unlocked ? 'bg-white' : 'bg-[#F0F1F4]'}`} style={{ boxShadow: badge.unlocked ? '0 2px 8px rgba(0,0,0,0.08)' : 'none' }}>
                     <div className={`w-12 h-12 flex items-center justify-center rounded-full shrink-0 ${badge.unlocked ? 'bg-[#EAF2EB]' : 'bg-[#DFE4EC]'}`}>
                       {badge.unlocked ? (
-                        <BadgeIcon size={26} color="#679974" />
+                        <BadgeIcon size={26} color="#46704F" />
                       ) : (
                         <IconLock size={24} color="#9CA3AF" />
                       )}
@@ -407,7 +407,7 @@ export default function Points() {
         <div className="fixed inset-0 z-50 flex flex-col bg-[#F6F5F1] md:bg-black/40 md:items-center md:justify-center">
           <div className="flex flex-col flex-1 overflow-hidden md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:shadow-xl md:bg-[#F6F5F1]">
           <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between shrink-0" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-            <button onClick={() => setShowRules(false)} className="w-9 h-9 flex items-center justify-center">
+            <button onClick={() => setShowRules(false)} aria-label="Cerrar" className="w-9 h-9 flex items-center justify-center">
               <IconClose size={22} />
             </button>
             <h2 className="text-[#2E2D38] absolute left-1/2 -translate-x-1/2" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '16px' }}>Cómo ganar puntos</h2>
@@ -450,7 +450,7 @@ export default function Points() {
                 return (
                   <div key={i} className="flex items-start gap-3 bg-white rounded-2xl p-4" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                     <div className="w-10 h-10 rounded-full bg-[#EAF2EB] flex items-center justify-center shrink-0">
-                      <RuleIcon size={22} color="#679974" />
+                      <RuleIcon size={22} color="#46704F" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-brand-black">{rule.title}</p>

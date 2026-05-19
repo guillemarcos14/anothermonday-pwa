@@ -17,7 +17,7 @@ const IconEllipsisVertical = ({ size = 20, color = '#1D4D4F' }) => (
   </svg>
 )
 
-const IconCafe = ({ size = 28, color = '#679974' }) => (
+const IconCafe = ({ size = 28, color = '#46704F' }) => (
   <svg width={size} height={size} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
     <path d="M18 8h1a4 4 0 010 8h-1" />
     <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" />
@@ -27,7 +27,7 @@ const IconCafe = ({ size = 28, color = '#679974' }) => (
   </svg>
 )
 
-const IconComida = ({ size = 28, color = '#679974' }) => (
+const IconComida = ({ size = 28, color = '#46704F' }) => (
   <svg width={size} height={size} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
     <path d="M10.2 18H4.774a1.5 1.5 0 0 1-1.352-.97 11 11 0 0 1 .132-6.487" />
     <path d="M18 10.2V4.774a1.5 1.5 0 0 0-.97-1.352 11 11 0 0 0-6.486.132" />
@@ -83,10 +83,10 @@ function ProductCard({ product, qty, onAdd, onRemove }) {
       <div className="flex-1 px-4 py-4 flex flex-col justify-between min-h-[140px]">
         <div>
           <p className="text-brand-black text-[28px] leading-tight truncate font-[550]" style={{ fontFamily: "'Instrument Serif', serif" }}>{product.nombre}</p>
-          {product.descripcion && <p className="text-brand-black/40 text-xs mt-0.5 line-clamp-2">{product.descripcion}</p>}
+          {product.descripcion && <p className="text-text-muted text-xs mt-0.5 line-clamp-2">{product.descripcion}</p>}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-brand-black/50 text-sm font-medium">{product.precio.toFixed(2)} €</p>
+          <p className="text-text-muted text-sm font-medium">{product.precio.toFixed(2)} €</p>
           {qty === 0 ? (
             <button
               onClick={handleAdd}
@@ -222,7 +222,7 @@ export default function DesktopApp() {
             <span style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '20px', letterSpacing: '-1px', color: '#FFFFFF' }}>Another Monday</span>
             <div className="flex items-center gap-1">
               <div className="relative">
-                <button onClick={() => setMenuOpen((v) => !v)} className="w-9 h-9 flex items-center justify-center">
+                <button onClick={() => setMenuOpen((v) => !v)} aria-label="Menú" className="w-9 h-9 flex items-center justify-center">
                   <IconEllipsisVertical color="white" />
                 </button>
                 {menuOpen && (
@@ -327,7 +327,7 @@ export default function DesktopApp() {
           <div className="relative bg-white rounded-2xl max-w-[500px] w-full max-h-[80vh] overflow-y-auto mx-4 shadow-xl">
             <div className="px-6 pt-5 pb-3 flex items-center justify-between border-b border-[#E8E7E3]">
               <h2 className="text-brand-black text-lg font-bold">Tu Carrito</h2>
-              <button onClick={() => setShowCart(false)} className="w-9 h-9 flex items-center justify-center text-[#2E2D38]">
+              <button onClick={() => setShowCart(false)} aria-label="Cerrar carrito" className="w-9 h-9 flex items-center justify-center text-[#2E2D38]">
                 <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -336,7 +336,7 @@ export default function DesktopApp() {
 
             {itemsCarrito.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-6">
-                <p className="text-brand-black/50 text-sm mb-4">Tu carrito está vacío</p>
+                <p className="text-text-muted text-sm mb-4">Tu carrito está vacío</p>
                 <button
                   onClick={() => setShowCart(false)}
                   className="px-6 py-2.5 rounded-full bg-brand-green text-white text-sm font-medium hover:bg-brand-dark transition-colors"
@@ -349,11 +349,11 @@ export default function DesktopApp() {
                 {/* Pickup info */}
                 <div className="px-6 pt-4 flex gap-4">
                   <button onClick={() => setShowHoraModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
-                    <p className="text-brand-black/40 text-xs mb-0.5">Hora</p>
+                    <p className="text-text-muted text-xs mb-0.5">Hora</p>
                     <p className="text-brand-black font-semibold text-sm">{hora}</p>
                   </button>
                   <button onClick={() => setShowTiendaModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
-                    <p className="text-brand-black/40 text-xs mb-0.5">Tienda</p>
+                    <p className="text-text-muted text-xs mb-0.5">Tienda</p>
                     <p className="text-brand-black font-semibold text-sm">{tienda.nombre}</p>
                   </button>
                 </div>
@@ -367,7 +367,7 @@ export default function DesktopApp() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-brand-black text-sm font-bold truncate">{item.nombre}</p>
-                        <p className="text-brand-black/50 text-xs">{item.precio.toFixed(2)} €</p>
+                        <p className="text-text-muted text-xs">{item.precio.toFixed(2)} €</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <button onClick={() => quitar(item.id)} className="w-7 h-7 rounded-full border border-brand-green text-brand-green flex items-center justify-center text-sm leading-none">−</button>
@@ -399,10 +399,10 @@ export default function DesktopApp() {
                       </div>
                       <div className="flex-1 text-left">
                         <p className="text-brand-black text-sm font-semibold">{t.nombre}</p>
-                        <p className="text-brand-black/40 text-xs">•••• {t.ultimos4}</p>
+                        <p className="text-text-muted text-xs">•••• {t.ultimos4}</p>
                       </div>
                       {tarjetaActiva === t.id && (
-                        <svg width="18" height="18" fill="none" stroke="#679974" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                        <svg width="18" height="18" fill="none" stroke="#46704F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       )}
@@ -432,7 +432,7 @@ export default function DesktopApp() {
               </svg>
             </div>
             <h2 className="text-brand-black text-xl font-bold text-center mb-2">¡Gracias por tu pedido!</h2>
-            <p className="text-brand-black/50 text-sm text-center mb-6">Muestra tu QR para la recogida</p>
+            <p className="text-text-muted text-sm text-center mb-6">Muestra tu QR para la recogida</p>
             <div className="w-full bg-brand-bg rounded-xl px-5 py-4 mb-4">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-brand-black font-bold text-sm">Puntos ganados</p>
@@ -441,7 +441,7 @@ export default function DesktopApp() {
               {ultimoPedido.items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between text-sm">
                   <span className="text-brand-black/70">{item.qty}x {item.nombre}</span>
-                  <span className="text-brand-black/50">{(item.precio * item.qty).toFixed(2)} €</span>
+                  <span className="text-text-muted">{(item.precio * item.qty).toFixed(2)} €</span>
                 </div>
               ))}
             </div>
@@ -478,7 +478,7 @@ export default function DesktopApp() {
             <div className="overflow-y-auto px-5 pb-5">
               {TIENDAS.map((grupo) => (
                 <div key={grupo.ciudad} className="mb-3">
-                  <p className="text-xs text-brand-black/40 font-semibold uppercase tracking-wide mb-1 px-4">{grupo.ciudad}</p>
+                  <p className="text-xs text-text-muted font-semibold uppercase tracking-wide mb-1 px-4">{grupo.ciudad}</p>
                   {grupo.tiendas.map((t) => (
                     <button key={t} onClick={() => { setTienda({ nombre: t, ciudad: grupo.ciudad }); setShowTiendaModal(false) }}
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium mb-1 ${tienda.nombre === t && tienda.ciudad === grupo.ciudad ? 'bg-brand-green text-white' : 'text-brand-black hover:bg-brand-bg'}`}

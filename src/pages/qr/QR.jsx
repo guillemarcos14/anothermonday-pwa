@@ -55,7 +55,7 @@ export default function QR() {
     <PageWrapper>
       {/* Header */}
       <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-        <button onClick={() => navigate(-1)} className="w-9 h-9 flex items-center justify-center">
+        <button onClick={() => navigate(-1)} aria-label="Volver" className="w-9 h-9 flex items-center justify-center">
           <svg width="22" height="22" fill="none" stroke="#2E2D38" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -79,6 +79,7 @@ export default function QR() {
               bgColor="#FFFFFF"
               fgColor="#1D4D4F"
               level="M"
+              title="Código QR de identificación personal"
             />
           </div>
 
@@ -88,7 +89,7 @@ export default function QR() {
         </div>
 
         {/* Points Card — same as Mis Puntos screen */}
-        <div className="w-full overflow-hidden p-5 text-white mt-5" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}>
+        <div className="w-full overflow-hidden p-5 text-white mt-5" style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}>
           <p style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>Nivel {currentTier.name}</p>
           <p className="text-white text-sm font-semibold mt-0.5">
             {points} / {currentTier.maxPoints} pts

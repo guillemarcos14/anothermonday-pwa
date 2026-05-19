@@ -26,7 +26,7 @@ function getHorasDisponibles() {
 }
 
 const IconCafe = () => (
-  <svg width="20" height="20" fill="none" stroke="#679974" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+  <svg width="20" height="20" fill="none" stroke="#46704F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
     <path d="M18 8h1a4 4 0 010 8h-1" />
     <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" />
     <line x1="6" y1="1" x2="6" y2="4" />
@@ -36,7 +36,7 @@ const IconCafe = () => (
 )
 
 const IconComida = () => (
-  <svg width="20" height="20" fill="none" stroke="#679974" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+  <svg width="20" height="20" fill="none" stroke="#46704F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
     <path d="M10.2 18H4.774a1.5 1.5 0 0 1-1.352-.97 11 11 0 0 1 .132-6.487" />
     <path d="M18 10.2V4.774a1.5 1.5 0 0 0-.97-1.352 11 11 0 0 0-6.486.132" />
     <path d="M18 5a4 3 0 0 1 4 3 2 2 0 0 1-2 2 10 10 0 0 0-5.139 1.42" />
@@ -189,7 +189,7 @@ export default function Orders() {
           <h2 className="text-brand-black text-xl font-bold text-center mb-2">
             ¡Gracias por realizar un nuevo pedido!
           </h2>
-          <p className="text-brand-black/50 text-sm text-center mb-8">
+          <p className="text-text-muted text-sm text-center mb-8">
             Muestra tu QR para la recogida
           </p>
 
@@ -203,7 +203,7 @@ export default function Orders() {
               {ultimoPedido.items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between text-sm">
                   <span className="text-brand-black/70">{item.qty}x {item.nombre}</span>
-                  <span className="text-brand-black/50">{(item.precio * item.qty).toFixed(2)} €</span>
+                  <span className="text-text-muted">{(item.precio * item.qty).toFixed(2)} €</span>
                 </div>
               ))}
             </div>
@@ -213,7 +213,7 @@ export default function Orders() {
           <div className="w-full bg-white rounded-xl px-5 py-4">
             <div className="flex items-center justify-between mb-2">
               <p className="text-brand-black font-bold text-sm">{currentTier.name}</p>
-              <p className="text-brand-black/50 text-xs">{userPoints}/{currentTier.maxPoints} pts</p>
+              <p className="text-text-muted text-xs">{userPoints}/{currentTier.maxPoints} pts</p>
             </div>
             <div className="w-full h-2.5 bg-brand-bg rounded-full overflow-hidden">
               <div
@@ -242,7 +242,7 @@ export default function Orders() {
     <PageWrapper className="!pb-0">
       {/* Header */}
       <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-        <button onClick={() => isCarrito ? setVista('menu') : navigate(-1)} className="w-9 h-9 flex items-center justify-center">
+        <button onClick={() => isCarrito ? setVista('menu') : navigate(-1)} aria-label="Volver" className="w-9 h-9 flex items-center justify-center">
           <svg width="22" height="22" fill="none" stroke="#2E2D38" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -281,10 +281,10 @@ export default function Orders() {
         <>
           {/* Pickup time */}
           <div className="mx-6 mt-4 bg-white rounded-xl px-4 py-3">
-            <p className="text-brand-black/40 text-xs mb-1">Hora de Recogida</p>
+            <p className="text-text-muted text-xs mb-1">Hora de Recogida</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <svg className="text-brand-black/40" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <svg className="text-text-muted" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
@@ -298,10 +298,10 @@ export default function Orders() {
 
           {/* Store */}
           <div className="mx-6 mt-3 bg-white rounded-xl px-4 py-3">
-            <p className="text-brand-black/40 text-xs mb-1">Tienda de Recogida</p>
+            <p className="text-text-muted text-xs mb-1">Tienda de Recogida</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <svg className="text-brand-black/40" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <svg className="text-text-muted" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
@@ -339,7 +339,7 @@ export default function Orders() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-brand-black text-[15px] font-bold truncate">{item.nombre}</p>
-                        <p className="text-brand-black/50 text-sm mt-0.5">{item.precio.toFixed(2)} €</p>
+                        <p className="text-text-muted text-sm mt-0.5">{item.precio.toFixed(2)} €</p>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
                         {Array.from({ length: Math.min(item.qty, 4) }, (_, i) => (
@@ -389,10 +389,10 @@ export default function Orders() {
                         </div>
                         <div className="flex-1 text-left">
                           <p className="text-brand-black text-sm font-semibold">{t.nombre}</p>
-                          <p className="text-brand-black/40 text-xs">•••• {t.ultimos4}</p>
+                          <p className="text-text-muted text-xs">•••• {t.ultimos4}</p>
                         </div>
                         {tarjetaActiva === t.id && (
-                          <svg width="18" height="18" fill="none" stroke="#679974" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <svg width="18" height="18" fill="none" stroke="#46704F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         )}
@@ -455,7 +455,7 @@ export default function Orders() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-brand-black text-[15px] font-bold truncate">{prod.nombre}</p>
-                          <p className="text-brand-black/50 text-sm mt-0.5">{prod.precio.toFixed(2)} €</p>
+                          <p className="text-text-muted text-sm mt-0.5">{prod.precio.toFixed(2)} €</p>
                         </div>
                         {qty === 0 ? (
                           <button
@@ -512,12 +512,12 @@ export default function Orders() {
         pedidosCompletados.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-6">
             <div className="w-16 h-16 rounded-full bg-brand-lightGreen flex items-center justify-center mb-4">
-              <svg width="32" height="32" fill="none" stroke="#679974" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <svg width="32" height="32" fill="none" stroke="#46704F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-            <p className="text-brand-black/60 text-center text-sm max-w-[240px]">
+            <p className="text-text-muted text-center text-sm max-w-[240px]">
               No tienes pedidos completados aún.
             </p>
           </div>
@@ -534,17 +534,17 @@ export default function Orders() {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-brand-black font-bold text-sm">Pedido #{pedido.numero}</p>
-                      <p className="text-brand-black/50 text-xs mt-0.5">{fechaStr}</p>
+                      <p className="text-text-muted text-xs mt-0.5">{fechaStr}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                       isReciente
                         ? 'bg-brand-lightGreen text-brand-green'
-                        : 'bg-[#F0F2F5] text-brand-black/50'
+                        : 'bg-[#F0F2F5] text-text-muted'
                     }`}>
                       {isReciente ? 'En Recogida' : 'Completado'}
                     </span>
                   </div>
-                  <p className="text-brand-black/60 text-xs mb-2 line-clamp-1">{resumen}</p>
+                  <p className="text-text-muted text-xs mb-2 line-clamp-1">{resumen}</p>
                   <div className="flex items-center justify-between">
                     <p className="text-brand-black font-semibold text-sm">{pedido.total.toFixed(2)} €</p>
                     <p className="text-brand-green font-semibold text-sm">+{pedido.puntos} ⭐</p>
@@ -555,7 +555,7 @@ export default function Orders() {
 
             {/* Monthly summary */}
             <div className="bg-white rounded-xl px-4 py-4 mt-2">
-              <p className="text-brand-black/40 text-xs font-semibold uppercase tracking-wide mb-1">Resumen del mes</p>
+              <p className="text-text-muted text-xs font-semibold uppercase tracking-wide mb-1">Resumen del mes</p>
               <p className="text-brand-black font-bold text-sm">
                 Total este mes: {pedidosCompletados.reduce((s, p) => s + p.puntos, 0)} puntos
               </p>
@@ -614,7 +614,7 @@ export default function Orders() {
             <div className="overflow-y-auto overscroll-contain px-5 pb-20">
               {TIENDAS.map((grupo) => (
                 <div key={grupo.ciudad} className="mb-3">
-                  <p className="text-xs text-brand-black/40 font-semibold uppercase tracking-wide mb-1 px-4">{grupo.ciudad}</p>
+                  <p className="text-xs text-text-muted font-semibold uppercase tracking-wide mb-1 px-4">{grupo.ciudad}</p>
                   {grupo.tiendas.map((t) => (
                     <button
                       key={t}

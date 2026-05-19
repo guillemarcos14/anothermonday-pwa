@@ -77,6 +77,7 @@ export default function Home() {
           <div className="relative">
             <button
               onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Menú"
               className="w-9 h-9 flex items-center justify-center"
             >
               <IconEllipsisVertical color="#2E2D38" />
@@ -112,7 +113,7 @@ export default function Home() {
         <button
           onClick={() => navigate('/points')}
           className="relative overflow-hidden p-5 text-left w-full"
-          style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}
+          style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}
         >
           <p className="text-white" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '28px' }}>Nivel {currentTier.name}</p>
           <p className="text-white text-sm font-semibold mt-0.5">
@@ -136,7 +137,7 @@ export default function Home() {
           <button
             onClick={() => navigate('/orders')}
             className="overflow-hidden p-4 flex flex-col items-center justify-center gap-1.5"
-            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}
+            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}
           >
             <IconCupSoda size={42} />
             <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Pick & Go</span>
@@ -145,7 +146,7 @@ export default function Home() {
           <button
             onClick={() => navigate('/qr')}
             className="overflow-hidden p-4 flex flex-col items-center justify-center gap-1.5"
-            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #679974', backdropFilter: 'blur(8px)' }}
+            style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}
           >
             <IconScanLine size={42} />
             <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Mi QR</span>
@@ -166,13 +167,13 @@ export default function Home() {
               className="w-full h-44 object-cover object-top rounded-t-2xl"
             />
             {/* + button overlapping image and text area */}
-            <button onClick={() => navigate('/qr')} className="absolute -bottom-7 right-8 w-14 h-14 bg-[#679974] rounded-full flex items-center justify-center shadow-lg z-10">
+            <button onClick={() => navigate('/qr')} className="absolute -bottom-7 right-8 w-14 h-14 bg-[#46704F] rounded-full flex items-center justify-center shadow-lg z-10">
               <IconPlus size={26} />
             </button>
           </div>
           <div className="px-6 pb-6 pt-5">
             <h3 className="text-[#2E2D38]" style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: '14px' }}>Día Mundia del Café</h3>
-            <p className="text-xs text-[#2E2D38]/60 mt-1 line-clamp-2">
+            <p className="text-xs text-text-muted mt-1 line-clamp-2">
               Queremos celebrar el DMC con un 10% de descuento en todas las bebidas. Muestra tu QR en el mostrador.
             </p>
           </div>

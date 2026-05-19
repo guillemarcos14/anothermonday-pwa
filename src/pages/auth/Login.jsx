@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useUserStore } from '../../store/userStore'
 
 const inputClass =
-  'w-full py-3 px-5 bg-transparent text-white md:text-[#2E2D38] border border-white/40 md:border-[#2E2D38]/30 rounded-full focus:outline-none focus:border-brand-green placeholder:text-white/60 md:placeholder:text-[#2E2D38]/50 text-sm'
+  'w-full py-3 px-5 bg-transparent text-white md:text-[#2E2D38] border border-white/40 md:border-[#2E2D38]/30 rounded-full focus:outline-none focus:border-brand-green placeholder:text-white/60 md:placeholder:text-text-muted text-sm'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -137,7 +137,7 @@ export default function Login() {
       <div className="fixed inset-0 z-0 hidden md:block" style={{ background: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/fondodesktop.webp') center/cover no-repeat", filter: 'blur(12px)', transform: 'scale(1.1)' }} />
       <div className="relative z-10 md:bg-white md:rounded-3xl md:p-12 md:shadow-xl md:max-w-[480px] md:w-full">
       {/* Title */}
-      <h1 style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '35px', letterSpacing: '-1px', color: '#679974' }}>
+      <h1 style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '35px', letterSpacing: '-1px', color: '#46704F' }}>
         Another Monday
       </h1>
 
@@ -211,7 +211,7 @@ export default function Login() {
         <button
           type="button"
           onClick={handleForgotPassword}
-          className="text-xs text-white/60 md:text-[#2E2D38]/50 self-start"
+          className="text-xs text-white/60 md:text-text-muted self-start"
         >
           ¿Has olvidado tu contraseña?
         </button>

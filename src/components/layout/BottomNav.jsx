@@ -58,9 +58,10 @@ export default function BottomNav() {
         <NavLink
           key={tab.to}
           to={tab.to}
+          aria-label={tab.label}
           className={({ isActive }) =>
             `flex flex-col items-center gap-0.5 text-xs font-medium transition-colors md:flex-row md:gap-3 md:w-full md:px-3 md:py-2.5 md:rounded-xl md:text-sm ${
-              isActive ? 'text-[#679974] md:bg-brand-lightGreen' : 'text-[#1D4D4F] md:hover:bg-brand-bg'
+              isActive ? 'text-[#46704F] md:bg-brand-lightGreen' : 'text-[#1D4D4F] md:hover:bg-brand-bg'
             }`
           }
         >

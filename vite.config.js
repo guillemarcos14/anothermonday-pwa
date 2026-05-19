@@ -13,7 +13,7 @@ export default defineConfig({
         name: 'Another Monday',
         short_name: 'Another Monday',
         description: 'Pide con antelación, recoge sin esperas y acumula recompensas en cada visita.',
-        theme_color: '#679974',
+        theme_color: '#46704F',
         background_color: '#F6F5F1',
         display: 'standalone',
         orientation: 'portrait',
