@@ -1,0 +1,119 @@
+-- supabase/schema.sql
+-- Another Monday — esquema de base de datos
+-- Ejecutar en el editor SQL del panel de Supabase
+
+-- ──────────────────────────────────────────────
+-- profiles  (ya existe; se documenta para referencia completa)
+-- ──────────────────────────────────────────────
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text,
+  usuario text,
+  poblacion text,
+  cumpleanos date,
+  points integer not null default 0,
+  tier text not null default 'Bronce',
+  created_at timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+
+drop policy if exists "profiles_select_own" on public.profiles;
+create policy "profiles_select_own" on public.profiles
+  for select using (auth.uid() = id);
+
+drop policy if exists "profiles_update_own" on public.profiles;
+create policy "profiles_update_own" on public.profiles
+  for update using (auth.uid() = id) with check (auth.uid() = id);
+
+drop policy if exists "profiles_insert_own" on public.profiles;
+create policy "profiles_insert_own" on public.profiles
+  for insert with check (auth.uid() = id);
+
+-- ──────────────────────────────────────────────
+-- products  (migración del módulo estático src/data/products.js)
+-- ids enteros estables conservados del catálogo original
+-- ──────────────────────────────────────────────
+create table if not exists public.products (
+  id integer primary key,
+  nombre text not null,
+  precio numeric(6,2) not null,
+  categoria text not null,
+  imagen text,
+  descripcion text,
+  disponible boolean not null default true
+);
+
+alter table public.products enable row level security;
+
+-- Catálogo de lectura pública: cualquiera puede leerlo, nadie lo modifica desde el cliente
+drop policy if exists "products_select_all" on public.products;
+create policy "products_select_all" on public.products
+  for select using (true);
+
+-- ──────────────────────────────────────────────
+-- orders
+-- ──────────────────────────────────────────────
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  numero text not null,
+  total numeric(8,2) not null,
+  puntos integer not null default 0,
+  estado text not null default 'en_recogida',  -- en_recogida | completado
+  tienda_nombre text,
+  tienda_ciudad text,
+  hora_recogida text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists orders_user_id_idx on public.orders(user_id);
+
+alter table public.orders enable row level security;
+
+drop policy if exists "orders_select_own" on public.orders;
+create policy "orders_select_own" on public.orders
+  for select using (auth.uid() = user_id);
+
+drop policy if exists "orders_insert_own" on public.orders;
+create policy "orders_insert_own" on public.orders
+  for insert with check (auth.uid() = user_id);
+
+drop policy if exists "orders_update_own" on public.orders;
+create policy "orders_update_own" on public.orders
+  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- ──────────────────────────────────────────────
+-- order_items
+-- ──────────────────────────────────────────────
+create table if not exists public.order_items (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references public.orders(id) on delete cascade,
+  product_id integer references public.products(id),
+  nombre text not null,         -- copia del nombre al momento de compra
+  precio numeric(6,2) not null, -- precio al momento de compra
+  cantidad integer not null check (cantidad > 0)
+);
+
+create index if not exists order_items_order_id_idx on public.order_items(order_id);
+
+alter table public.order_items enable row level security;
+
+-- La pertenencia se hereda del pedido padre: solo accede quien posee el order
+drop policy if exists "order_items_select_own" on public.order_items;
+create policy "order_items_select_own" on public.order_items
+  for select using (
+    exists (
+      select 1 from public.orders o
+      where o.id = order_items.order_id and o.user_id = auth.uid()
+    )
+  );
+
+drop policy if exists "order_items_insert_own" on public.order_items;
+create policy "order_items_insert_own" on public.order_items
+  for insert with check (
+    exists (
+      select 1 from public.orders o
+      where o.id = order_items.order_id and o.user_id = auth.uid()
+    )
+  );
