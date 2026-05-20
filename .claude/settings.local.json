@@ -20,7 +20,10 @@
       "Bash(git config:*)",
       "Bash(git push:*)",
       "Bash(gh:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(git -C /mnt/c/Users/Guillem/Desktop/pwa status)",
+      "Bash(git -C /mnt/c/Users/Guillem/Desktop/pwa log --oneline -3)",
+      "Bash(git -C /mnt/c/Users/Guillem/Desktop/pwa push)"
     ]
   }
 }

@@ -209,7 +209,7 @@ export default function DesktopApp() {
   }
 
   return (
-    <main className="min-h-[100dvh]">
+    <div className="min-h-[100dvh]">
 
       {/* ═══ Hero Banner (full viewport) ═══ */}
       <div className="relative w-full h-[100dvh] overflow-hidden">
@@ -490,6 +490,6 @@ export default function DesktopApp() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   )
 }
