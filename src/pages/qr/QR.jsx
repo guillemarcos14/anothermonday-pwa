@@ -65,7 +65,7 @@ export default function QR() {
       </div>
 
       <div className="px-5 mt-6 flex flex-col items-center">
-        <p className="text-[#6F8094] text-sm text-center leading-relaxed mb-6">
+        <p className="text-[#54647A] text-sm text-center leading-relaxed mb-6">
           Muestra este código en caja para acumular<br />puntos y canjear recompensas
         </p>
 
@@ -85,7 +85,7 @@ export default function QR() {
 
           {/* User info */}
           <p className="text-[#2E2D38] font-bold text-lg mt-5">{userName}</p>
-          <p className="text-[#6F8094] text-xs mt-0.5">{memberCode}</p>
+          <p className="text-[#54647A] text-xs mt-0.5">{memberCode}</p>
         </div>
 
         {/* Points Card — same as Mis Puntos screen */}

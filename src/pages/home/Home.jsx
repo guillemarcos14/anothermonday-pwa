@@ -167,7 +167,7 @@ export default function Home() {
               className="w-full h-44 object-cover object-top rounded-t-2xl"
             />
             {/* + button overlapping image and text area */}
-            <button onClick={() => navigate('/qr')} className="absolute -bottom-7 right-8 w-14 h-14 bg-[#46704F] rounded-full flex items-center justify-center shadow-lg z-10">
+            <button onClick={() => navigate('/qr')} aria-label="Mostrar mi QR" className="absolute -bottom-7 right-8 w-14 h-14 bg-[#46704F] rounded-full flex items-center justify-center shadow-lg z-10">
               <IconPlus size={26} />
             </button>
           </div>

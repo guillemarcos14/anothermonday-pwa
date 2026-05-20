@@ -313,7 +313,7 @@ export default function Points() {
         <div className="mt-6">
           <h2 className="text-brand-black font-bold text-base">Logros</h2>
           <div className="flex items-center justify-between mt-0.5">
-            <p className="text-[#6F8094] text-xs">
+            <p className="text-[#54647A] text-xs">
               {unlockedCount} de {ALL_BADGES.length} desbloqueados
             </p>
             <button onClick={() => setShowAllBadges(true)} className="text-brand-black text-xs font-semibold flex items-center gap-1">
@@ -371,7 +371,7 @@ export default function Points() {
           </div>
 
           <div className="flex-1 overflow-y-auto px-5 pt-6 pb-28 md:pb-6">
-            <p className="text-[#6F8094] text-sm mb-5">{unlockedCount} de {ALL_BADGES.length} desbloqueados</p>
+            <p className="text-[#54647A] text-sm mb-5">{unlockedCount} de {ALL_BADGES.length} desbloqueados</p>
             <div className="flex flex-col gap-3">
               {badges.map((badge) => {
                 const BadgeIcon = badge.icon
@@ -385,8 +385,8 @@ export default function Points() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-semibold ${badge.unlocked ? 'text-brand-green' : 'text-[#6F8094]'}`}>{badge.name}</p>
-                      <p className="text-xs text-[#6F8094] mt-0.5">{badge.description}</p>
+                      <p className={`text-sm font-semibold ${badge.unlocked ? 'text-brand-green' : 'text-[#54647A]'}`}>{badge.name}</p>
+                      <p className="text-xs text-[#54647A] mt-0.5">{badge.description}</p>
                     </div>
                     {badge.unlocked && (
                       <div className="w-6 h-6 rounded-full bg-brand-green flex items-center justify-center shrink-0">
@@ -436,7 +436,7 @@ export default function Points() {
                     <div className="flex-1">
                       <span className={`text-sm font-semibold ${isCurrent ? 'text-brand-green' : 'text-brand-black'}`}>{tier.name}</span>
                     </div>
-                    <span className="text-xs text-[#6F8094]">{tier.minPoints} – {tier.maxPoints} pts</span>
+                    <span className="text-xs text-[#54647A]">{tier.minPoints} – {tier.maxPoints} pts</span>
                   </div>
                 )
               })}
@@ -454,7 +454,7 @@ export default function Points() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-brand-black">{rule.title}</p>
-                      <p className="text-xs text-[#6F8094] mt-0.5 leading-relaxed">{rule.desc}</p>
+                      <p className="text-xs text-[#54647A] mt-0.5 leading-relaxed">{rule.desc}</p>
                     </div>
                   </div>
                 )
