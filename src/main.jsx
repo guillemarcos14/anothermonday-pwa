@@ -52,3 +52,32 @@ setTimeout(() => {
     setTimeout(() => splash.remove(), 500)
   }
 }, 300)
+
+// Listen for service worker background sync messages
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'ORDER_SYNCED' && event.data.success) {
+      // Dynamically import to avoid circular deps
+      import('./store/toastStore').then(({ useToastStore }) => {
+        useToastStore.getState().addToast('Pedido sincronizado correctamente', 'success')
+      })
+      import('./hooks/useOrders').then(({ notifyOrdersChanged }) => {
+        notifyOrdersChanged()
+      })
+      import('./hooks/usePoints').then(({ notifyPointsChanged }) => {
+        notifyPointsChanged()
+      })
+    }
+  })
+
+  // iOS fallback: replay pending orders on online event
+  // (Background Sync API is not supported on iOS Safari)
+  window.addEventListener('online', () => {
+    import('./hooks/useOrders').then(({ notifyOrdersChanged }) => {
+      notifyOrdersChanged()
+    })
+    import('./hooks/usePoints').then(({ notifyPointsChanged }) => {
+      notifyPointsChanged()
+    })
+  })
+}
