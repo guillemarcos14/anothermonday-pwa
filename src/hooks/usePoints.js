@@ -64,10 +64,13 @@ export function usePoints() {
   }, [])
 
   useEffect(() => {
-    fetchPoints()
+    let active = true
+    calcularPuntos()
+      .then((total) => { if (active) { setPoints(total); setCachedPoints(total) } })
+      .catch(() => { /* keep cached value */ })
 
     refreshListeners.add(fetchPoints)
-    return () => { refreshListeners.delete(fetchPoints) }
+    return () => { active = false; refreshListeners.delete(fetchPoints) }
   }, [fetchPoints])
 
   const currentTier = getTierFromPoints(points)

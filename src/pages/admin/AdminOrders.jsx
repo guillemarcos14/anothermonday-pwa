@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { listarTodosPedidos, actualizarEstadoPedido } from '../../lib/orders'
 import { supabase } from '../../lib/supabase'
 
@@ -21,7 +21,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true)
   const [expandido, setExpandido] = useState(null)
 
-  const cargarPedidos = async () => {
+  const cargarPedidos = useCallback(async () => {
     try {
       const data = await listarTodosPedidos(filtro || undefined)
       setPedidos(data)
@@ -30,11 +30,11 @@ export default function AdminOrders() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filtro])
 
   useEffect(() => {
     cargarPedidos()
-  }, [filtro])
+  }, [cargarPedidos])
 
   // Realtime subscription for new/updated orders
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function AdminOrders() {
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
-  }, [filtro])
+  }, [cargarPedidos])
 
   const handleCambiarEstado = async (orderId, nuevoEstado) => {
     try {

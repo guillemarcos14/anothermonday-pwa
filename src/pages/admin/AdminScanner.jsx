@@ -55,7 +55,7 @@ export default function AdminScanner() {
         (decodedText) => { handleScan(decodedText) },
         () => {}
       )
-    } catch (err) {
+    } catch {
       setError('No se pudo acceder a la cámara. Usa el input manual.')
       setScanning(false)
     }

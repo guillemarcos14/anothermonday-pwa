@@ -7,7 +7,7 @@ import { CATEGORIAS as FALLBACK_CATEGORIAS, PRODUCTOS as FALLBACK_PRODUCTOS, COM
 import { listarProductos, listarCategorias } from '../../lib/products'
 import { useAuthStore } from '../../store/authStore'
 import { useToastStore } from '../../store/toastStore'
-import { crearPedido, listarPedidos } from '../../lib/orders'
+import { crearPedido } from '../../lib/orders'
 import CustomizationModal from '../../components/orders/CustomizationModal'
 
 // Lightweight achievement milestones to check after order
@@ -77,15 +77,9 @@ export default function Orders() {
   const [ultimoPedido, setUltimoPedido] = useState(null) // for confirmation screen
   const { orders: pedidosCompletados } = useOrders()
 
-  // Payment cards
-  const [tarjetas, setTarjetas] = useState([
-    { id: 1, nombre: 'Mi Tarjeta', ultimos4: '4532' },
-  ])
+  // Payment cards (simulated — documented design decision)
+  const tarjetas = [{ id: 1, nombre: 'Mi Tarjeta', ultimos4: '4532' }]
   const [tarjetaActiva, setTarjetaActiva] = useState(1)
-  const [showNuevaTarjeta, setShowNuevaTarjeta] = useState(false)
-  const [nuevaTarjetaForm, setNuevaTarjetaForm] = useState({
-    numero: '', titular: '', expiry: '', cvv: '',
-  })
 
   const user = useAuthStore((s) => s.user)
   const addToast = useToastStore((s) => s.addToast)
@@ -148,31 +142,6 @@ export default function Orders() {
     const prod = custom || todosProductos.find((p) => p.id === Number(id))
     return prod ? { ...prod, qty } : null
   }).filter(Boolean)
-
-  const formatNumeroTarjeta = (val) => {
-    const digits = val.replace(/\D/g, '').slice(0, 16)
-    return digits.replace(/(.{4})/g, '$1 ').trim()
-  }
-
-  const formatExpiry = (val) => {
-    const digits = val.replace(/\D/g, '').slice(0, 4)
-    if (digits.length > 2) return digits.slice(0, 2) + '/' + digits.slice(2)
-    return digits
-  }
-
-  const handleGuardarTarjeta = () => {
-    const digits = nuevaTarjetaForm.numero.replace(/\D/g, '')
-    if (digits.length < 13 || !nuevaTarjetaForm.titular || !nuevaTarjetaForm.expiry || !nuevaTarjetaForm.cvv) return
-    const nueva = {
-      id: Date.now(),
-      nombre: nuevaTarjetaForm.titular,
-      ultimos4: digits.slice(-4),
-    }
-    setTarjetas((prev) => [...prev, nueva])
-    setTarjetaActiva(nueva.id)
-    setNuevaTarjetaForm({ numero: '', titular: '', expiry: '', cvv: '' })
-    setShowNuevaTarjeta(false)
-  }
 
   const handlePagar = async () => {
     const puntosGanados = Math.round(totalPrecio)
@@ -424,7 +393,6 @@ export default function Orders() {
                 <div className="px-6 pt-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-brand-black text-sm font-bold">Forma de Pago</h3>
-                    <button onClick={() => setShowNuevaTarjeta(true)} className="text-brand-green text-sm font-semibold">Nueva Tarjeta →</button>
                   </div>
                   <div className="flex flex-col gap-2">
                     {tarjetas.map((t) => (
@@ -579,8 +547,7 @@ export default function Orders() {
           </div>
         ) : (
           <div className="px-6 pt-4 pb-24 md:grid md:grid-cols-2 md:gap-4">
-            {pedidosCompletados.map((pedido, idx) => {
-              const isReciente = idx === 0
+            {pedidosCompletados.map((pedido) => {
               const resumen = pedido.order_items.map((i) => `${i.cantidad}x ${i.nombre}`).join(', ')
               const fechaStr = new Date(pedido.created_at).toLocaleString('es-ES', {
                 day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
