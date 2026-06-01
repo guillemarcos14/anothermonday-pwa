@@ -1,4 +1,5 @@
-import { useSyncExternalStore } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { calcularPuntos } from '../lib/orders'
 
 const TIERS = [
   { name: 'Bronce', minPoints: 0, maxPoints: 100 },
@@ -20,38 +21,55 @@ function getNextTierName(currentTier) {
   return null
 }
 
-// ── localStorage-backed store for points ──
+const CACHE_KEY = 'cached_points'
 
-const STORAGE_KEY = 'pedidosCompletados'
-let listeners = new Set()
-
-function subscribe(cb) {
-  listeners.add(cb)
-  return () => listeners.delete(cb)
-}
-
-function getSnapshot() {
+function getCachedPoints() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return 0
-    const pedidos = JSON.parse(raw)
-    return pedidos.reduce((sum, p) => sum + (p.puntos || 0), 0)
+    const raw = localStorage.getItem(CACHE_KEY)
+    return raw ? Number(raw) : 0
   } catch {
     return 0
   }
 }
 
-// Call this after writing pedidosCompletados to localStorage
+function setCachedPoints(points) {
+  try {
+    localStorage.setItem(CACHE_KEY, String(points))
+  } catch { /* quota exceeded */ }
+}
+
+// Global listeners so any component can trigger a refresh
+let refreshListeners = new Set()
+
 export function notifyPointsChanged() {
-  listeners.forEach((cb) => cb())
+  refreshListeners.forEach((cb) => cb())
 }
 
 /**
- * Hook that returns the current points + tier info,
- * derived directly from the persisted pedidosCompletados in localStorage.
+ * Hook that returns points + tier info from Supabase,
+ * with localStorage as offline cache.
  */
 export function usePoints() {
-  const points = useSyncExternalStore(subscribe, getSnapshot, () => 0)
+  const [points, setPoints] = useState(getCachedPoints)
+
+  const fetchPoints = useCallback(async () => {
+    try {
+      const total = await calcularPuntos()
+      setPoints(total)
+      setCachedPoints(total)
+    } catch {
+      // Offline — use cached value
+      setPoints(getCachedPoints())
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchPoints()
+
+    refreshListeners.add(fetchPoints)
+    return () => { refreshListeners.delete(fetchPoints) }
+  }, [fetchPoints])
+
   const currentTier = getTierFromPoints(points)
   const nextTierName = getNextTierName(currentTier)
   const pointsToNext = currentTier.maxPoints - points

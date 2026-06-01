@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePoints } from '../../hooks/usePoints'
+import { useOrders } from '../../hooks/useOrders'
 import PageWrapper from '../../components/layout/PageWrapper'
 
 /* ── SVG icon components ── */
@@ -162,21 +163,15 @@ const ALL_BADGES = [
   { id: 11, name: 'Tier Platino', description: 'Alcanza el nivel Platino', icon: IconCrown, check: (ctx) => ctx.tierIndex >= 3 },
 ]
 
-/* ── Helper: compute achievement context from localStorage orders ── */
-function getAchievementContext(tiers, currentTier) {
-  let orders = []
-  try {
-    const raw = localStorage.getItem('pedidosCompletados')
-    if (raw) orders = JSON.parse(raw)
-  } catch { /* empty */ }
-
+/* ── Helper: compute achievement context from Supabase orders ── */
+function getAchievementContext(orders, tiers, currentTier) {
   const totalOrders = orders.length
 
-  // Count matcha items
+  // Count matcha items (Supabase orders use order_items with nombre/cantidad)
   const matchaCount = orders.reduce((sum, o) => {
-    return sum + (o.items || []).reduce((s, item) => {
-      const name = (item.nombre || item.name || '').toLowerCase()
-      return s + (name.includes('matcha') ? (item.qty || item.cantidad || 1) : 0)
+    return sum + (o.order_items || []).reduce((s, item) => {
+      const name = (item.nombre || '').toLowerCase()
+      return s + (name.includes('matcha') ? (item.cantidad || 1) : 0)
     }, 0)
   }, 0)
 
@@ -185,22 +180,22 @@ function getAchievementContext(tiers, currentTier) {
 
   // Early order (before 9:00)
   const hasEarlyOrder = orders.some(o => {
-    if (!o.hora) return false
-    const h = parseInt(o.hora.split(':')[0], 10)
+    if (!o.hora_recogida) return false
+    const h = parseInt(o.hora_recogida.split(':')[0], 10)
     return h < 9
   })
 
   // Unique stores
-  const uniqueStores = new Set(orders.map(o => o.tienda?.nombre).filter(Boolean)).size
+  const uniqueStores = new Set(orders.map(o => o.tienda_nombre).filter(Boolean)).size
 
-  // Max consecutive-day streak (using YYYY-MM-DD for reliable sorting & comparison)
+  // Max consecutive-day streak
   let maxStreak = 0
   if (orders.length > 0) {
     const toDateKey = (fecha) => {
       const d = new Date(fecha)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     }
-    const dayKeys = [...new Set(orders.map(o => toDateKey(o.fecha)))].sort()
+    const dayKeys = [...new Set(orders.map(o => toDateKey(o.created_at)))].sort()
     let streak = 1
     for (let i = 1; i < dayKeys.length; i++) {
       const prev = new Date(dayKeys[i - 1] + 'T00:00:00')
@@ -236,10 +231,11 @@ const TIER_ICONS = {
 export default function Points() {
   const navigate = useNavigate()
   const { points, currentTier, nextTierName, pointsToNext, progress, tiers: TIERS } = usePoints()
+  const { orders } = useOrders()
   const [showAllBadges, setShowAllBadges] = useState(false)
   const [showRules, setShowRules] = useState(false)
 
-  const ctx = useMemo(() => getAchievementContext(TIERS, currentTier), [TIERS, currentTier])
+  const ctx = useMemo(() => getAchievementContext(orders, TIERS, currentTier), [orders, TIERS, currentTier])
   const badges = useMemo(() => ALL_BADGES.map(b => ({ ...b, unlocked: b.check(ctx) })), [ctx])
   const unlockedCount = badges.filter(b => b.unlocked).length
   const previewBadges = badges.slice(0, 6)
