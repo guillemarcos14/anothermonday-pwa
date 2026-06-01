@@ -1,26 +1,40 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
+import { useUserStore } from './store/userStore'
 import { useAuth } from './hooks/useAuth'
+import { useOrderSubscription } from './hooks/useOrderSubscription'
 import BottomNav from './components/layout/BottomNav'
+import ToastContainer from './components/ui/Toast'
 
+// Eager-loaded routes
 import Login from './pages/auth/Login'
 import Home from './pages/home/Home'
-import Points from './pages/points/Points'
 
-import Orders from './pages/orders/Orders'
-import QR from './pages/qr/QR'
+// Lazy-loaded routes
+const Points = lazy(() => import('./pages/points/Points'))
+const Orders = lazy(() => import('./pages/orders/Orders'))
+const QR = lazy(() => import('./pages/qr/QR'))
+const Profile = lazy(() => import('./pages/profile/Profile'))
+const Rewards = lazy(() => import('./pages/rewards/Rewards'))
+
+// Admin routes (lazy)
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'))
+const AdminScanner = lazy(() => import('./pages/admin/AdminScanner'))
+
+function Spinner() {
+  return (
+    <div className="min-h-[100dvh] bg-brand-bg flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-brand-green border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
+}
 
 function ProtectedRoute() {
   const { user, loading } = useAuthStore()
 
-  if (loading) {
-    return (
-      <div className="min-h-[100dvh] bg-brand-bg flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-brand-green border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
-
+  if (loading) return <Spinner />
   if (!user) return <Navigate to="/login" replace />
 
   return (
@@ -31,17 +45,21 @@ function ProtectedRoute() {
   )
 }
 
+function AdminRoute() {
+  const { user, loading } = useAuthStore()
+  const profile = useUserStore((s) => s.profile)
+
+  if (loading) return <Spinner />
+  if (!user) return <Navigate to="/login" replace />
+  if (!profile?.is_admin) return <Navigate to="/home" replace />
+
+  return <Outlet />
+}
+
 function PublicRoute() {
   const { user, loading } = useAuthStore()
 
-  if (loading) {
-    return (
-      <div className="min-h-[100dvh] bg-brand-bg flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-brand-green border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
-
+  if (loading) return <Spinner />
   if (user) return <Navigate to="/home" replace />
 
   return <Outlet />
@@ -49,27 +67,41 @@ function PublicRoute() {
 
 export default function App() {
   useAuth()
+  useOrderSubscription()
 
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Public routes — redirect to /home if logged in */}
-        <Route element={<PublicRoute />}>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-        </Route>
+      <ToastContainer />
+      <Suspense fallback={<Spinner />}>
+        <Routes>
+          {/* Public routes */}
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
 
-        {/* Protected routes — redirect to /login if not logged in */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/points" element={<Points />} />
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/points" element={<Points />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/qr" element={<QR />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/rewards" element={<Rewards />} />
+          </Route>
 
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/qr" element={<QR />} />
-        </Route>
+          {/* Admin routes */}
+          <Route element={<AdminRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route path="/admin" element={<Navigate to="/admin/orders" replace />} />
+              <Route path="/admin/orders" element={<AdminOrders />} />
+              <Route path="/admin/scanner" element={<AdminScanner />} />
+            </Route>
+          </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
