@@ -144,12 +144,12 @@ export default function Home() {
           </button>
 
           <button
-            onClick={() => navigate('/qr')}
+            onClick={() => navigate('/rewards')}
             className="overflow-hidden p-4 flex flex-col items-center justify-center gap-1.5"
             style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}
           >
-            <IconScanLine size={42} />
-            <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Mi QR</span>
+            <IconArrowRight size={42} />
+            <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Premios</span>
           </button>
         </div>
 
@@ -165,6 +165,9 @@ export default function Home() {
               src="/news.jpg"
               alt="Día Mundial del Café"
               className="w-full h-44 object-cover object-top rounded-t-2xl"
+              loading="lazy"
+              width="400"
+              height="176"
             />
             {/* + button overlapping image and text area */}
             <button onClick={() => navigate('/qr')} aria-label="Mostrar mi QR" className="absolute -bottom-7 right-8 w-14 h-14 bg-[#46704F] rounded-full flex items-center justify-center shadow-lg z-10">

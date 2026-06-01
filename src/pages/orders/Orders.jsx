@@ -1,8 +1,22 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageWrapper from '../../components/layout/PageWrapper'
 import { usePoints, notifyPointsChanged } from '../../hooks/usePoints'
-import { CATEGORIAS, PRODUCTOS, COMIDA_IDS } from '../../data/products'
+import { useOrders, notifyOrdersChanged } from '../../hooks/useOrders'
+import { CATEGORIAS as FALLBACK_CATEGORIAS, PRODUCTOS as FALLBACK_PRODUCTOS, COMIDA_IDS } from '../../data/products'
+import { listarProductos, listarCategorias } from '../../lib/products'
+import { useAuthStore } from '../../store/authStore'
+import { useToastStore } from '../../store/toastStore'
+import { crearPedido, listarPedidos } from '../../lib/orders'
+import CustomizationModal from '../../components/orders/CustomizationModal'
+
+// Lightweight achievement milestones to check after order
+const ORDER_MILESTONES = [
+  { count: 1, name: 'Primera vez' },
+  { count: 5, name: '5 pedidos' },
+  { count: 10, name: '10 pedidos' },
+  { count: 25, name: '25 pedidos' },
+]
 
 const TIENDAS = [
   { ciudad: 'Barcelona', tiendas: ['Poble Nou', 'Gràcia', 'Eixample'] },
@@ -60,16 +74,8 @@ export default function Orders() {
 
   // New states for cart flow
   const [vista, setVista] = useState('menu') // 'menu' | 'carrito' | 'confirmacion'
-  const [pedidosCompletados, setPedidosCompletados] = useState(() => {
-    try {
-      const saved = localStorage.getItem('pedidosCompletados')
-      if (saved) {
-        return JSON.parse(saved).map((p) => ({ ...p, fecha: new Date(p.fecha) }))
-      }
-    } catch {}
-    return []
-  })
   const [ultimoPedido, setUltimoPedido] = useState(null) // for confirmation screen
+  const { orders: pedidosCompletados } = useOrders()
 
   // Payment cards
   const [tarjetas, setTarjetas] = useState([
@@ -81,18 +87,47 @@ export default function Orders() {
     numero: '', titular: '', expiry: '', cvv: '',
   })
 
-  const todosProductos = Object.values(PRODUCTOS).flat()
-  const productos = PRODUCTOS[categoriaActiva] || []
+  const user = useAuthStore((s) => s.user)
+  const addToast = useToastStore((s) => s.addToast)
 
+  // Customization modal
+  const [customProduct, setCustomProduct] = useState(null)
+
+  // Dynamic product catalog from Supabase (falls back to static data)
+  const [categorias, setCategorias] = useState(FALLBACK_CATEGORIAS)
+  const [productosMap, setProductosMap] = useState(FALLBACK_PRODUCTOS)
+
+  useEffect(() => {
+    listarCategorias().then(setCategorias)
+    listarProductos().then(setProductosMap)
+  }, [])
+
+  const todosProductos = Object.values(productosMap).flat()
+  const productos = productosMap[categoriaActiva] || []
+
+  // Cart: { [productId]: { qty, customizedProduct } }
   const añadir = (id) => {
     setCarrito((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }))
   }
+
+  const añadirConCustom = (customizedProd) => {
+    // Store the customized product data for the cart
+    setCarrito((prev) => ({ ...prev, [customizedProd.id]: (prev[customizedProd.id] || 0) + 1 }))
+    // Store custom data for this product
+    setCustomData((prev) => ({ ...prev, [customizedProd.id]: customizedProd }))
+    setCustomProduct(null)
+  }
+
+  const [customData, setCustomData] = useState({}) // { [productId]: customizedProduct }
 
   const quitar = (id) => {
     setCarrito((prev) => {
       const next = { ...prev }
       if (next[id] > 1) next[id]--
-      else delete next[id]
+      else {
+        delete next[id]
+        setCustomData((cd) => { const n = { ...cd }; delete n[id]; return n })
+      }
       return next
     })
   }
@@ -100,7 +135,8 @@ export default function Orders() {
   const totalItems = Object.values(carrito).reduce((s, n) => s + n, 0)
 
   const totalPrecio = Object.entries(carrito).reduce((sum, [id, qty]) => {
-    const prod = todosProductos.find((p) => p.id === Number(id))
+    const custom = customData[id]
+    const prod = custom || todosProductos.find((p) => p.id === Number(id))
     return sum + (prod ? prod.precio * qty : 0)
   }, 0)
 
@@ -108,7 +144,8 @@ export default function Orders() {
 
   // Build cart items list
   const itemsCarrito = Object.entries(carrito).map(([id, qty]) => {
-    const prod = todosProductos.find((p) => p.id === Number(id))
+    const custom = customData[id]
+    const prod = custom || todosProductos.find((p) => p.id === Number(id))
     return prod ? { ...prod, qty } : null
   }).filter(Boolean)
 
@@ -137,31 +174,50 @@ export default function Orders() {
     setShowNuevaTarjeta(false)
   }
 
-  const handlePagar = () => {
+  const handlePagar = async () => {
     const puntosGanados = Math.round(totalPrecio)
 
-    const pedido = {
-      id: Date.now(),
-      numero: String(42 + pedidosCompletados.length).padStart(4, '0'),
+    try {
+      await crearPedido({
+        userId: user.id,
+        total: totalPrecio,
+        puntos: puntosGanados,
+        tienda,
+        hora,
+        items: itemsCarrito,
+      })
+
+      // Check for newly unlocked achievements
+      const prevCount = pedidosCompletados.length
+      const newCount = prevCount + 1
+      for (const m of ORDER_MILESTONES) {
+        if (prevCount < m.count && newCount >= m.count) {
+          addToast(`Logro desbloqueado: ${m.name}`, 'achievement')
+        }
+      }
+
+      // Refresh orders and points across all screens
+      notifyOrdersChanged()
+      notifyPointsChanged()
+
+      addToast('Pedido realizado con éxito', 'success')
+    } catch (err) {
+      console.error('Error creando pedido:', err)
+
+      // If offline, the service worker background sync will handle it
+      if (!navigator.onLine) {
+        addToast('Sin conexión — tu pedido se enviará automáticamente cuando vuelvas a estar online', 'info')
+      } else {
+        addToast('Error al crear el pedido. Inténtalo de nuevo.', 'error')
+        return
+      }
+    }
+
+    setUltimoPedido({
       items: itemsCarrito,
       total: totalPrecio,
       puntos: puntosGanados,
-      fecha: new Date(),
-      tienda: { ...tienda },
-      hora,
-    }
-
-    // Add order to completados and persist to localStorage
-    const nuevosPedidos = [pedido, ...pedidosCompletados]
-    setPedidosCompletados(nuevosPedidos)
-    try {
-      localStorage.setItem('pedidosCompletados', JSON.stringify(nuevosPedidos))
-    } catch {}
-
-    // Notify the usePoints hook so all screens update immediately
-    notifyPointsChanged()
-
-    setUltimoPedido(pedido)
+    })
     setVista('confirmacion')
   }
 
@@ -334,7 +390,7 @@ export default function Orders() {
                     <div key={item.id} className="flex items-center gap-3 py-4">
                       <div className="w-14 h-14 rounded-full bg-brand-lightGreen shrink-0 flex items-center justify-center overflow-hidden">
                         {item.imagen
-                          ? <img src={item.imagen} alt={item.nombre} className="w-full h-full object-cover" />
+                          ? <img src={item.imagen} alt={item.nombre} className="w-full h-full object-cover" loading="lazy" width="56" height="56" />
                           : COMIDA_IDS.has(item.id) ? <IconComida /> : <IconCafe />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -424,7 +480,7 @@ export default function Orders() {
                   ref={categoriasRef}
                   className="flex gap-2 px-6 pt-5 pb-3 overflow-x-auto no-scrollbar"
                 >
-                  {CATEGORIAS.map((cat) => (
+                  {categorias.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setCategoriaActiva(cat)}
@@ -450,7 +506,7 @@ export default function Orders() {
                       >
                         <div className="w-14 h-14 rounded-full bg-brand-lightGreen shrink-0 flex items-center justify-center overflow-hidden">
                           {prod.imagen
-                            ? <img src={prod.imagen} alt={prod.nombre} className="w-full h-full object-cover" />
+                            ? <img src={prod.imagen} alt={prod.nombre} className="w-full h-full object-cover" loading="lazy" width="56" height="56" />
                             : COMIDA_IDS.has(prod.id) ? <IconComida /> : <IconCafe />}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -459,7 +515,7 @@ export default function Orders() {
                         </div>
                         {qty === 0 ? (
                           <button
-                            onClick={() => añadir(prod.id)}
+                            onClick={() => setCustomProduct(prod)}
                             className="px-4 py-1.5 rounded-full bg-brand-green text-white text-sm font-medium shrink-0"
                           >
                             Añadir
@@ -525,8 +581,8 @@ export default function Orders() {
           <div className="px-6 pt-4 pb-24 md:grid md:grid-cols-2 md:gap-4">
             {pedidosCompletados.map((pedido, idx) => {
               const isReciente = idx === 0
-              const resumen = pedido.items.map((i) => `${i.qty}x ${i.nombre}`).join(', ')
-              const fechaStr = pedido.fecha.toLocaleString('es-ES', {
+              const resumen = pedido.order_items.map((i) => `${i.cantidad}x ${i.nombre}`).join(', ')
+              const fechaStr = new Date(pedido.created_at).toLocaleString('es-ES', {
                 day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
               })
               return (
@@ -537,11 +593,15 @@ export default function Orders() {
                       <p className="text-text-muted text-xs mt-0.5">{fechaStr}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      isReciente
+                      pedido.estado === 'en_recogida'
                         ? 'bg-brand-lightGreen text-brand-green'
-                        : 'bg-[#F0F2F5] text-text-muted'
+                        : pedido.estado === 'cancelado'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-[#F0F2F5] text-text-muted'
                     }`}>
-                      {isReciente ? 'En Recogida' : 'Completado'}
+                      {pedido.estado === 'en_recogida' ? 'En Recogida'
+                        : pedido.estado === 'cancelado' ? 'Cancelado'
+                        : 'Completado'}
                     </span>
                   </div>
                   <p className="text-text-muted text-xs mb-2 line-clamp-1">{resumen}</p>
@@ -633,6 +693,15 @@ export default function Orders() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Customization Modal */}
+      {customProduct && (
+        <CustomizationModal
+          product={customProduct}
+          onConfirm={añadirConCustom}
+          onClose={() => setCustomProduct(null)}
+        />
       )}
     </PageWrapper>
   )
