@@ -260,7 +260,7 @@ export default function Points() {
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <h1 className="text-[#2E2D38] absolute left-1/2 -translate-x-1/2" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '16px' }}>Recompensas</h1>
+        <h1 className="text-[#2E2D38] text-lg font-bold absolute left-1/2 -translate-x-1/2">Recompensas</h1>
         <div className="w-9" />
       </div>
 
