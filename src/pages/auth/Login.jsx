@@ -54,6 +54,7 @@ export default function Login() {
     }
 
     // Load profile (with points) before navigating
+    let loadedProfile = null
     if (data.user) {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -63,13 +64,14 @@ export default function Login() {
       console.log('[Login] Profile loaded:', profile, 'Error:', profileError)
       if (profile) {
         useUserStore.getState().setProfile(profile)
+        loadedProfile = profile
       } else {
         // Fallback: ensure profile.id exists so points can be persisted
         useUserStore.getState().setProfile({ id: data.user.id, email: data.user.email, points: 0, tier: 'Bronce' })
       }
     }
 
-    navigate('/home')
+    navigate(loadedProfile?.is_admin ? '/admin' : '/home')
   }
 
   const handleRegister = async (e) => {

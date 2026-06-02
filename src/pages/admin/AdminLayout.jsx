@@ -58,17 +58,8 @@ export default function AdminLayout() {
         </div>
         <div className="hidden md:block mt-auto pt-4 border-t border-[#E8E7E3]">
           <button
-            onClick={() => navigate('/home')}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[#1D4D4F] hover:bg-[#F0F2F5] w-full"
-          >
-            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Volver a la app
-          </button>
-          <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[#E05252] hover:bg-red-50 w-full mt-1"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[#E05252] hover:bg-red-50 w-full"
           >
             <svg width="16" height="16" fill="none" stroke="#E05252" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />

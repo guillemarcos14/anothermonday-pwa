@@ -32,9 +32,11 @@ function Spinner() {
 
 function ProtectedRoute() {
   const { user, loading } = useAuthStore()
+  const profile = useUserStore((s) => s.profile)
 
   if (loading) return <Spinner />
   if (!user) return <Navigate to="/login" replace />
+  if (profile?.is_admin) return <Navigate to="/admin" replace />
 
   return (
     <div className="md:desktop-shell">
@@ -57,9 +59,10 @@ function AdminRoute() {
 
 function PublicRoute() {
   const { user, loading } = useAuthStore()
+  const profile = useUserStore((s) => s.profile)
 
   if (loading) return <Spinner />
-  if (user) return <Navigate to="/home" replace />
+  if (user) return <Navigate to={profile?.is_admin ? '/admin' : '/home'} replace />
 
   return <Outlet />
 }
