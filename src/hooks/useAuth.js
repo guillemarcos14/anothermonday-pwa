@@ -19,7 +19,7 @@ async function fetchProfile(userId) {
 }
 
 export function useAuth() {
-  const { hydrate, setLoading, logout } = useAuthStore()
+  const { hydrate, setLoading } = useAuthStore()
   const { setProfile, clearProfile } = useUserStore()
 
   useEffect(() => {
@@ -33,36 +33,13 @@ export function useAuth() {
       }
     }, 5000)
 
-    supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        if (cancelled) return
-        clearTimeout(safetyTimeout)
-        // Atomic update: set user + session + loading in a single render
-        hydrate(session?.user ?? null, session)
-        if (session?.user) {
-          fetchProfile(session.user.id).then((profile) => {
-            if (cancelled) return
-            if (profile) {
-              setProfile(profile)
-            } else {
-              setProfile({ id: session.user.id, email: session.user.email, points: 0, tier: 'Bronce' })
-            }
-          })
-        }
-      })
-      .catch(async (err) => {
-        if (cancelled) return
-        clearTimeout(safetyTimeout)
-        console.error('[useAuth] getSession failed:', err)
-        // Clear stale tokens so the error doesn't repeat on next visit
-        await supabase.auth.signOut().catch(() => {})
-        hydrate(null, null)
-      })
-
+    // Use only onAuthStateChange — it fires INITIAL_SESSION on mount,
+    // so there's no need to call getSession() separately (which causes
+    // auth-token lock conflicts).
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (cancelled) return
-        // Atomic update to avoid intermediate state
+        clearTimeout(safetyTimeout)
         hydrate(session?.user ?? null, session)
         if (session?.user) {
           const profile = await fetchProfile(session.user.id)
@@ -70,7 +47,6 @@ export function useAuth() {
           if (profile) {
             setProfile(profile)
           } else {
-            console.warn('[useAuth] Profile not found in DB, using fallback with user id')
             setProfile({ id: session.user.id, email: session.user.email, points: 0, tier: 'Bronce' })
           }
         } else {
@@ -84,5 +60,5 @@ export function useAuth() {
       clearTimeout(safetyTimeout)
       subscription.unsubscribe()
     }
-  }, [hydrate, setLoading, setProfile, clearProfile, logout])
+  }, [hydrate, setLoading, setProfile, clearProfile])
 }
