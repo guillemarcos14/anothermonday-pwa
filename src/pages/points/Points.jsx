@@ -321,17 +321,17 @@ export default function Points() {
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-3">
               <h2 className="text-brand-black font-bold text-base">Tus regalos</h2>
-              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
+              <span className="px-2 py-0.5 rounded-full bg-[#EAF2EB] text-brand-green text-xs font-semibold">
                 {pendingRewards.length}
               </span>
             </div>
             <div className="flex flex-col gap-3">
               {pendingRewards.map((reward) => (
                 <div key={reward.id} className="flex items-center gap-3 bg-white rounded-xl p-4" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-                  <div className="w-12 h-12 rounded-full bg-[#FEF3C7] shrink-0 flex items-center justify-center overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-[#EAF2EB] shrink-0 flex items-center justify-center overflow-hidden">
                     {reward.products?.imagen
                       ? <img src={reward.products.imagen} alt={reward.products.nombre} className="w-full h-full object-cover" />
-                      : <IconGift size={24} color="#D97706" />
+                      : <IconGift size={24} color="#46704F" />
                     }
                   </div>
                   <div className="flex-1 min-w-0">
@@ -340,7 +340,7 @@ export default function Points() {
                     </p>
                     <p className="text-xs text-[#54647A] mt-0.5">Recoge en tu próximo pedido</p>
                   </div>
-                  <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
+                  <div className="w-6 h-6 rounded-full bg-brand-green flex items-center justify-center shrink-0">
                     <IconGift size={14} color="white" />
                   </div>
                 </div>

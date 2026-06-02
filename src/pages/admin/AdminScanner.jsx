@@ -287,8 +287,8 @@ export default function AdminScanner() {
               <div className="space-y-3">
                 {cliente.rewards.map((reward) => (
                   <div key={reward.id} className="flex items-center gap-3 border border-[#F0F2F5] rounded-xl p-3">
-                    <div className="w-10 h-10 rounded-full bg-[#FEF3C7] flex items-center justify-center shrink-0">
-                      <svg width="20" height="20" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <div className="w-10 h-10 rounded-full bg-[#EAF2EB] flex items-center justify-center shrink-0">
+                      <svg width="20" height="20" fill="none" stroke="#46704F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                         <rect x="3" y="8" width="18" height="4" rx="1" />
                         <path d="M12 8v13" />
                         <path d="M19 12v7a2 2 0 01-2 2H7a2 2 0 01-2-2v-7" />
@@ -303,7 +303,7 @@ export default function AdminScanner() {
                     </div>
                     <button
                       onClick={() => handleEntregarRegalo(reward.id)}
-                      className="px-3 py-1.5 bg-amber-500 text-white text-xs font-semibold rounded-lg shrink-0"
+                      className="px-3 py-1.5 bg-brand-green text-white text-xs font-semibold rounded-lg shrink-0"
                     >
                       Entregar
                     </button>
