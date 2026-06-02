@@ -123,16 +123,11 @@ export async function buscarPedidosActivos(userId) {
  * Uses maybeSingle to avoid 406 when RLS blocks the row.
  */
 export async function buscarPerfil(userId) {
-  console.log('[buscarPerfil] Buscando userId:', userId)
-  const { data, error, status } = await supabase
-    .from('profiles')
-    .select('id, email, name, points, tier')
-    .eq('id', userId)
+  const { data, error } = await supabase
+    .rpc('admin_get_profile', { target_uid: userId })
     .maybeSingle()
 
-  console.log('[buscarPerfil] status:', status, 'error:', error, 'data:', data)
-
   if (error) throw error
-  if (!data) throw new Error(`Perfil no encontrado para ID: ${userId}. Status HTTP: ${status}`)
+  if (!data) throw new Error('Perfil no encontrado.')
   return data
 }

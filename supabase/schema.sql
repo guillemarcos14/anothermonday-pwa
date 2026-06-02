@@ -52,6 +52,26 @@ drop policy if exists "profiles_select_admin" on public.profiles;
 create policy "profiles_select_admin" on public.profiles
   for select using (public.is_admin());
 
+-- Admin profile lookup — SECURITY DEFINER bypasses RLS entirely
+create or replace function public.admin_get_profile(target_uid uuid)
+returns table(id uuid, email text, name text, points integer, tier text)
+language plpgsql
+stable
+security definer
+as $$
+begin
+  -- Only allow admins to call this
+  if not public.is_admin() then
+    raise exception 'No autorizado';
+  end if;
+
+  return query
+    select p.id, p.email, p.name, p.points, p.tier
+    from public.profiles p
+    where p.id = target_uid;
+end;
+$$;
+
 -- ──────────────────────────────────────────────
 -- products
 -- ──────────────────────────────────────────────
