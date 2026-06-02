@@ -25,10 +25,13 @@ const IconScanLine = ({ size = 60, color = 'white' }) => (
   </svg>
 )
 
-const IconArrowRight = ({ size = 20, color = 'white' }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14"/>
-    <path d="m12 5 7 7-7 7"/>
+const IconGift = ({ size = 20, color = 'white' }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="8" width="18" height="4" rx="1" />
+    <path d="M12 8v13" />
+    <path d="M19 12v7a2 2 0 01-2 2H7a2 2 0 01-2-2v-7" />
+    <path d="M7.5 8a2.5 2.5 0 010-5C9 3 12 8 12 8" />
+    <path d="M16.5 8a2.5 2.5 0 000-5C15 3 12 8 12 8" />
   </svg>
 )
 
@@ -57,6 +60,7 @@ export default function Home() {
     useAuthStore.getState().logout()
     useUserStore.getState().clearProfile()
     supabase.auth.signOut()
+    try { localStorage.removeItem('cached_orders'); localStorage.removeItem('cached_points'); localStorage.removeItem('carrito') } catch {}
     navigate('/login', { replace: true })
   }
 
@@ -144,11 +148,11 @@ export default function Home() {
           </button>
 
           <button
-            onClick={() => navigate('/rewards')}
+            onClick={() => navigate('/points')}
             className="overflow-hidden p-4 flex flex-col items-center justify-center gap-1.5"
             style={{ height: '150px', boxShadow: '0 6px 16px rgba(0,0,0,0.25)', borderRadius: '20px', background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.05) 100%), #46704F', backdropFilter: 'blur(8px)' }}
           >
-            <IconArrowRight size={42} />
+            <IconGift size={42} />
             <span className="text-white" style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: '14px', letterSpacing: '0px' }}>Premios</span>
           </button>
         </div>

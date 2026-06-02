@@ -24,7 +24,7 @@ const tabs = [
     ),
   },
   {
-    to: '/rewards',
+    to: '/points',
     label: 'Premios',
     icon: (
       <svg width="29" height="29" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">

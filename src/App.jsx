@@ -15,7 +15,6 @@ import Home from './pages/home/Home'
 const Points = lazy(() => import('./pages/points/Points'))
 const Orders = lazy(() => import('./pages/orders/Orders'))
 const QR = lazy(() => import('./pages/qr/QR'))
-const Rewards = lazy(() => import('./pages/rewards/Rewards'))
 
 // Admin routes (lazy)
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
@@ -36,7 +35,8 @@ function ProtectedRoute() {
 
   if (loading) return <Spinner />
   if (!user) return <Navigate to="/login" replace />
-  if (profile?.is_admin) return <Navigate to="/admin" replace />
+  if (!profile) return <Spinner />
+  if (profile.is_admin) return <Navigate to="/admin/orders" replace />
 
   return (
     <div className="md:desktop-shell">
@@ -52,7 +52,8 @@ function AdminRoute() {
 
   if (loading) return <Spinner />
   if (!user) return <Navigate to="/login" replace />
-  if (!profile?.is_admin) return <Navigate to="/home" replace />
+  if (!profile) return <Spinner />
+  if (!profile.is_admin) return <Navigate to="/home" replace />
 
   return <Outlet />
 }
@@ -88,7 +89,7 @@ export default function App() {
             <Route path="/points" element={<Points />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/qr" element={<QR />} />
-            <Route path="/rewards" element={<Rewards />} />
+            <Route path="/rewards" element={<Navigate to="/points" replace />} />
           </Route>
 
           {/* Admin routes */}

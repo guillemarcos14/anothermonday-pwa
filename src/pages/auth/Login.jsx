@@ -139,7 +139,7 @@ export default function Login() {
       <div className="fixed inset-0 z-0 hidden md:block" style={{ background: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/fondodesktop.webp') center/cover no-repeat", filter: 'blur(12px)', transform: 'scale(1.1)' }} />
       <div className="relative z-10 md:bg-white md:rounded-3xl md:p-12 md:shadow-xl md:max-w-[480px] md:w-full">
       {/* Title */}
-      <h1 style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '35px', letterSpacing: '-1px', color: '#46704F' }}>
+      <h1 className="text-white md:text-[#46704F]" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, fontSize: '35px', letterSpacing: '-1px' }}>
         Another Monday
       </h1>
 

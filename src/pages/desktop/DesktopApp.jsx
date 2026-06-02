@@ -5,7 +5,10 @@ import { useAuthStore } from '../../store/authStore'
 import { useUserStore } from '../../store/userStore'
 import { supabase } from '../../lib/supabase'
 import { notifyPointsChanged } from '../../hooks/usePoints'
+import { notifyOrdersChanged } from '../../hooks/useOrders'
 import { ALL_PRODUCTOS, CATEGORIAS, PRODUCTOS, COMIDA_IDS } from '../../data/products'
+import { crearPedido } from '../../lib/orders'
+import CustomizationModal from '../../components/orders/CustomizationModal'
 
 /* ── SVG Icons ── */
 
@@ -60,7 +63,7 @@ function getHorasDisponibles() {
 }
 
 /* ── Product Card ── */
-function ProductCard({ product, qty, onAdd, onRemove }) {
+function ProductCard({ product, qty, onAdd, onRemove, onCustomize }) {
   const isFood = COMIDA_IDS.has(product.id)
   const [justAdded, setJustAdded] = useState(false)
 
@@ -89,10 +92,10 @@ function ProductCard({ product, qty, onAdd, onRemove }) {
           <p className="text-text-muted text-sm font-medium">{product.precio.toFixed(2)} €</p>
           {qty === 0 ? (
             <button
-              onClick={handleAdd}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${justAdded ? 'bg-emerald-600 text-white' : 'bg-brand-green text-white'}`}
+              onClick={onCustomize}
+              className="px-5 py-2 rounded-full text-sm font-medium transition-colors bg-brand-green text-white"
             >
-              {justAdded ? 'Añadido ✓' : 'Añadir'}
+              Añadir
             </button>
           ) : (
             <div className="flex items-center gap-3">
@@ -140,13 +143,8 @@ export default function DesktopApp() {
   const [showCart, setShowCart] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [ultimoPedido, setUltimoPedido] = useState(null)
-  const [pedidosCompletados, setPedidosCompletados] = useState(() => {
-    try {
-      const saved = localStorage.getItem('pedidosCompletados')
-      if (saved) return JSON.parse(saved).map((p) => ({ ...p, fecha: new Date(p.fecha) }))
-    } catch {}
-    return []
-  })
+  const [customProduct, setCustomProduct] = useState(null)
+  const [customData, setCustomData] = useState({})
   const [tarjetas] = useState([{ id: 1, nombre: 'Mi Tarjeta', ultimos4: '4532' }])
   const [tarjetaActiva, setTarjetaActiva] = useState(1)
 
@@ -158,39 +156,54 @@ export default function DesktopApp() {
   /* ── Cart helpers ── */
   const todosProductos = Object.values(PRODUCTOS).flat()
   const añadir = (id) => setCarrito((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }))
+  const añadirConCustom = (customizedProd) => {
+    setCarrito((prev) => ({ ...prev, [customizedProd.id]: (prev[customizedProd.id] || 0) + 1 }))
+    setCustomData((prev) => ({ ...prev, [customizedProd.id]: customizedProd }))
+    setCustomProduct(null)
+  }
   const quitar = (id) => setCarrito((prev) => {
     const next = { ...prev }
     if (next[id] > 1) next[id]--
-    else delete next[id]
+    else {
+      delete next[id]
+      setCustomData((cd) => { const n = { ...cd }; delete n[id]; return n })
+    }
     return next
   })
   const totalItems = Object.values(carrito).reduce((s, n) => s + n, 0)
   const totalPrecio = Object.entries(carrito).reduce((sum, [id, qty]) => {
-    const prod = todosProductos.find((p) => p.id === Number(id))
+    const custom = customData[id]
+    const prod = custom || todosProductos.find((p) => p.id === Number(id))
     return sum + (prod ? prod.precio * qty : 0)
   }, 0)
   const itemsCarrito = Object.entries(carrito).map(([id, qty]) => {
-    const prod = todosProductos.find((p) => p.id === Number(id))
+    const custom = customData[id]
+    const prod = custom || todosProductos.find((p) => p.id === Number(id))
     return prod ? { ...prod, qty } : null
   }).filter(Boolean)
 
-  const handlePagar = () => {
+  const handlePagar = async () => {
     const puntosGanados = Math.round(totalPrecio)
-    const pedido = {
-      id: Date.now(),
-      numero: String(42 + pedidosCompletados.length).padStart(4, '0'),
+    try {
+      await crearPedido({
+        userId: user.id,
+        total: totalPrecio,
+        puntos: puntosGanados,
+        tienda,
+        hora,
+        items: itemsCarrito,
+      })
+      notifyOrdersChanged()
+      notifyPointsChanged()
+    } catch (err) {
+      console.error('Error creando pedido:', err)
+      return
+    }
+    setUltimoPedido({
       items: itemsCarrito,
       total: totalPrecio,
       puntos: puntosGanados,
-      fecha: new Date(),
-      tienda: { ...tienda },
-      hora,
-    }
-    const nuevosPedidos = [pedido, ...pedidosCompletados]
-    setPedidosCompletados(nuevosPedidos)
-    try { localStorage.setItem('pedidosCompletados', JSON.stringify(nuevosPedidos)) } catch {}
-    notifyPointsChanged()
-    setUltimoPedido(pedido)
+    })
     setShowCart(false)
     setShowConfirmation(true)
   }
@@ -198,6 +211,7 @@ export default function DesktopApp() {
   const handleCerrarConfirmacion = () => {
     setUltimoPedido(null)
     setCarrito({})
+    setCustomData({})
     setShowConfirmation(false)
   }
 
@@ -205,6 +219,7 @@ export default function DesktopApp() {
     useAuthStore.getState().logout()
     useUserStore.getState().clearProfile()
     supabase.auth.signOut()
+    try { localStorage.removeItem('cached_orders'); localStorage.removeItem('cached_points'); localStorage.removeItem('carrito') } catch {}
     navigate('/login', { replace: true })
   }
 
@@ -294,6 +309,7 @@ export default function DesktopApp() {
                 qty={carrito[product.id] || 0}
                 onAdd={() => añadir(product.id)}
                 onRemove={() => quitar(product.id)}
+                onCustomize={() => setCustomProduct(product)}
               />
             ))}
           </div>
@@ -360,13 +376,16 @@ export default function DesktopApp() {
 
                 {/* Cart items */}
                 <div className="px-6 pt-4 flex flex-col">
-                  {itemsCarrito.map((item) => (
+                  {itemsCarrito.map((item) => {
+                    const desc = [item.tamano, item.tipo_leche && item.tipo_leche !== 'normal' ? item.tipo_leche.charAt(0).toUpperCase() + item.tipo_leche.slice(1) : null, ...(item.extras || []).map(e => e.nombre)].filter(Boolean).join(' · ')
+                    return (
                     <div key={item.id} className="flex items-center gap-3 py-3">
                       <div className="w-10 h-10 rounded-full bg-brand-lightGreen shrink-0 flex items-center justify-center">
                         {COMIDA_IDS.has(item.id) ? <IconComida size={20} /> : <IconCafe size={20} />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-brand-black text-sm font-bold truncate">{item.nombre}</p>
+                        {desc && <p className="text-text-muted text-[11px] truncate">{desc}</p>}
                         <p className="text-text-muted text-xs">{item.precio.toFixed(2)} €</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -375,7 +394,7 @@ export default function DesktopApp() {
                         <button onClick={() => añadir(item.id)} className="w-7 h-7 rounded-full bg-brand-green text-white flex items-center justify-center text-sm leading-none">+</button>
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
 
                 {/* Total + Payment */}
@@ -489,6 +508,15 @@ export default function DesktopApp() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ═══ Customization Modal ═══ */}
+      {customProduct && (
+        <CustomizationModal
+          product={customProduct}
+          onConfirm={añadirConCustom}
+          onClose={() => setCustomProduct(null)}
+        />
       )}
     </div>
   )

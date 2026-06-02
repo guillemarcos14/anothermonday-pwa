@@ -232,13 +232,11 @@ export default function Points() {
   const navigate = useNavigate()
   const { points, currentTier, nextTierName, pointsToNext, progress, tiers: TIERS } = usePoints()
   const { orders } = useOrders()
-  const [showAllBadges, setShowAllBadges] = useState(false)
   const [showRules, setShowRules] = useState(false)
 
   const ctx = useMemo(() => getAchievementContext(orders, TIERS, currentTier), [orders, TIERS, currentTier])
   const badges = useMemo(() => ALL_BADGES.map(b => ({ ...b, unlocked: b.check(ctx) })), [ctx])
   const unlockedCount = badges.filter(b => b.unlocked).length
-  const previewBadges = badges.slice(0, 6)
 
   return (
     <PageWrapper>
@@ -249,7 +247,7 @@ export default function Points() {
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <h1 className="text-[#2E2D38] absolute left-1/2 -translate-x-1/2" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '16px' }}>Mis Puntos</h1>
+        <h1 className="text-[#2E2D38] absolute left-1/2 -translate-x-1/2" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '16px' }}>Recompensas</h1>
         <div className="w-9" />
       </div>
 
@@ -305,44 +303,30 @@ export default function Points() {
         {/* Separator */}
         <div className="h-px bg-[#DFE4EC] mt-8" />
 
-        {/* Logros */}
+        {/* Recompensas (logros) */}
         <div className="mt-6">
-          <h2 className="text-brand-black font-bold text-base">Logros</h2>
-          <div className="flex items-center justify-between mt-0.5">
-            <p className="text-[#54647A] text-xs">
-              {unlockedCount} de {ALL_BADGES.length} desbloqueados
-            </p>
-            <button onClick={() => setShowAllBadges(true)} className="text-brand-black text-xs font-semibold flex items-center gap-1">
-              Ver todos
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </button>
+          <div className="flex items-center justify-between">
+            <h2 className="text-brand-black font-bold text-base">Tus Recompensas</h2>
+            <p className="text-[#54647A] text-xs">{unlockedCount} de {ALL_BADGES.length}</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 mt-4">
-            {previewBadges.map((badge) => {
+          <div className="flex flex-col gap-3 mt-4">
+            {badges.map((badge) => {
               const BadgeIcon = badge.icon
               return (
-                <div
-                  key={badge.id}
-                  className={`flex flex-col items-center justify-center gap-2 rounded-2xl aspect-square ${
-                    badge.unlocked ? 'bg-white' : 'bg-[#DFE4EC]'
-                  }`}
-                >
-                  <div className="w-11 h-11 flex items-center justify-center">
-                    {badge.unlocked ? (
-                      <BadgeIcon size={30} color="#46704F" />
-                    ) : (
-                      <IconLock size={30} color="#1D4D4F" />
-                    )}
+                <div key={badge.id} className={`flex items-center gap-4 p-4 rounded-xl ${badge.unlocked ? 'bg-white' : 'bg-[#F0F1F4]'}`} style={{ boxShadow: badge.unlocked ? '0 2px 8px rgba(0,0,0,0.06)' : 'none' }}>
+                  <div className={`w-12 h-12 flex items-center justify-center rounded-full shrink-0 ${badge.unlocked ? 'bg-[#EAF2EB]' : 'bg-[#DFE4EC]'}`}>
+                    {badge.unlocked ? <BadgeIcon size={26} color="#46704F" /> : <IconLock size={24} color="#9CA3AF" />}
                   </div>
-                  <span className={`text-[11px] font-medium text-center leading-tight ${
-                    badge.unlocked ? 'text-brand-green' : 'text-[#1D4D4F]'
-                  }`}>
-                    {badge.name}
-                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-semibold ${badge.unlocked ? 'text-brand-green' : 'text-[#54647A]'}`}>{badge.name}</p>
+                    <p className="text-xs text-[#54647A] mt-0.5">{badge.description}</p>
+                  </div>
+                  {badge.unlocked && (
+                    <div className="w-6 h-6 rounded-full bg-brand-green flex items-center justify-center shrink-0">
+                      <IconCheck size={14} color="white" />
+                    </div>
+                  )}
                 </div>
               )
             })}
@@ -353,50 +337,6 @@ export default function Points() {
           </button>
         </div>
       </div>
-
-      {/* ── Modal: Ver todos los logros ── */}
-      {showAllBadges && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-[#F6F5F1] md:bg-black/40 md:items-center md:justify-center">
-          <div className="flex flex-col flex-1 overflow-hidden md:flex-initial md:max-w-[500px] md:w-full md:max-h-[80vh] md:rounded-2xl md:shadow-xl md:bg-[#F6F5F1]">
-          <div className="relative bg-white px-5 pt-6 pb-3 flex items-center justify-between shrink-0" style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
-            <button onClick={() => setShowAllBadges(false)} aria-label="Cerrar" className="w-9 h-9 flex items-center justify-center">
-              <IconClose size={22} />
-            </button>
-            <h2 className="text-[#2E2D38] absolute left-1/2 -translate-x-1/2" style={{ fontFamily: 'Inter', fontWeight: 700, fontSize: '16px' }}>Todos los logros</h2>
-            <div className="w-9" />
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-5 pt-6 pb-28 md:pb-6">
-            <p className="text-[#54647A] text-sm mb-5">{unlockedCount} de {ALL_BADGES.length} desbloqueados</p>
-            <div className="flex flex-col gap-3">
-              {badges.map((badge) => {
-                const BadgeIcon = badge.icon
-                return (
-                  <div key={badge.id} className={`flex items-center gap-4 p-4 rounded-2xl ${badge.unlocked ? 'bg-white' : 'bg-[#F0F1F4]'}`} style={{ boxShadow: badge.unlocked ? '0 2px 8px rgba(0,0,0,0.08)' : 'none' }}>
-                    <div className={`w-12 h-12 flex items-center justify-center rounded-full shrink-0 ${badge.unlocked ? 'bg-[#EAF2EB]' : 'bg-[#DFE4EC]'}`}>
-                      {badge.unlocked ? (
-                        <BadgeIcon size={26} color="#46704F" />
-                      ) : (
-                        <IconLock size={24} color="#9CA3AF" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-semibold ${badge.unlocked ? 'text-brand-green' : 'text-[#54647A]'}`}>{badge.name}</p>
-                      <p className="text-xs text-[#54647A] mt-0.5">{badge.description}</p>
-                    </div>
-                    {badge.unlocked && (
-                      <div className="w-6 h-6 rounded-full bg-brand-green flex items-center justify-center shrink-0">
-                        <IconCheck size={14} color="white" />
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-          </div>
-        </div>
-      )}
 
       {/* ── Modal: Consigue más puntos (reglas) ── */}
       {showRules && (
