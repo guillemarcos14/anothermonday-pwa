@@ -222,7 +222,7 @@ export default function Orders() {
           <div className="w-full bg-white rounded-xl px-5 py-4 mb-4">
             <div className="flex items-center justify-between mb-3">
               <p className="text-brand-black font-bold text-sm">Felicidades</p>
-              <span className="text-brand-green font-bold text-lg">+{ultimoPedido.puntos} ⭐</span>
+              <span className="text-brand-green font-bold text-lg">+{ultimoPedido.puntos} pts</span>
             </div>
             <div className="flex flex-col gap-1">
               {ultimoPedido.items.map((item) => (
@@ -577,7 +577,7 @@ export default function Orders() {
                   <p className="text-text-muted text-xs mb-2 line-clamp-1">{resumen}</p>
                   <div className="flex items-center justify-between">
                     <p className="text-brand-black font-semibold text-sm">{pedido.total.toFixed(2)} €</p>
-                    <p className="text-brand-green font-semibold text-sm">+{pedido.puntos} ⭐</p>
+                    <p className="text-brand-green font-semibold text-sm">+{pedido.puntos} pts</p>
                   </div>
                 </div>
               )
