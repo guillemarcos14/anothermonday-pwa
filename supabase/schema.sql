@@ -3,6 +3,22 @@
 -- Ejecutar en el editor SQL del panel de Supabase
 
 -- ──────────────────────────────────────────────
+-- Helper: is_admin() — SECURITY DEFINER bypasses RLS
+-- so admin-check subqueries don't self-block on profiles
+-- ──────────────────────────────────────────────
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+as $$
+  select coalesce(
+    (select is_admin from public.profiles where id = auth.uid()),
+    false
+  );
+$$;
+
+-- ──────────────────────────────────────────────
 -- profiles
 -- ──────────────────────────────────────────────
 create table if not exists public.profiles (
@@ -31,12 +47,10 @@ drop policy if exists "profiles_insert_own" on public.profiles;
 create policy "profiles_insert_own" on public.profiles
   for insert with check (auth.uid() = id);
 
--- Admins can read any profile (needed for order management)
+-- Admins can read any profile (needed for order management / QR scanner)
 drop policy if exists "profiles_select_admin" on public.profiles;
 create policy "profiles_select_admin" on public.profiles
-  for select using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for select using (public.is_admin());
 
 -- ──────────────────────────────────────────────
 -- products
@@ -61,21 +75,15 @@ create policy "products_select_all" on public.products
 -- Admin CRUD on products
 drop policy if exists "products_insert_admin" on public.products;
 create policy "products_insert_admin" on public.products
-  for insert with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for insert with check (public.is_admin());
 
 drop policy if exists "products_update_admin" on public.products;
 create policy "products_update_admin" on public.products
-  for update using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for update using (public.is_admin());
 
 drop policy if exists "products_delete_admin" on public.products;
 create policy "products_delete_admin" on public.products
-  for delete using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for delete using (public.is_admin());
 
 -- ──────────────────────────────────────────────
 -- Seed: insert 16 products from static catalog
@@ -135,15 +143,11 @@ create policy "orders_update_own" on public.orders
 -- Admins can see and update ALL orders
 drop policy if exists "orders_select_admin" on public.orders;
 create policy "orders_select_admin" on public.orders
-  for select using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for select using (public.is_admin());
 
 drop policy if exists "orders_update_admin" on public.orders;
 create policy "orders_update_admin" on public.orders
-  for update using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for update using (public.is_admin());
 
 -- Sequence for order numbers
 create sequence if not exists public.orders_numero_seq start 42;
@@ -191,9 +195,7 @@ create policy "order_items_insert_own" on public.order_items
 -- Admins can see all order items
 drop policy if exists "order_items_select_admin" on public.order_items;
 create policy "order_items_select_admin" on public.order_items
-  for select using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for select using (public.is_admin());
 
 -- ──────────────────────────────────────────────
 -- Points functions (1B)
@@ -375,15 +377,11 @@ create policy "user_rewards_insert_own" on public.user_rewards
 -- Admins can see and update all rewards
 drop policy if exists "user_rewards_select_admin" on public.user_rewards;
 create policy "user_rewards_select_admin" on public.user_rewards
-  for select using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for select using (public.is_admin());
 
 drop policy if exists "user_rewards_update_admin" on public.user_rewards;
 create policy "user_rewards_update_admin" on public.user_rewards
-  for update using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for update using (public.is_admin());
 
 -- ──────────────────────────────────────────────
 -- Enable Realtime for orders table
