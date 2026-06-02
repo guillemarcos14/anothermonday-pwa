@@ -108,7 +108,7 @@ create table if not exists public.orders (
   numero text not null,
   total numeric(8,2) not null,
   puntos integer not null default 0,
-  estado text not null default 'en_recogida',  -- en_recogida | completado | cancelado
+  estado text not null default 'pendiente',  -- pendiente | completado | entregado
   tienda_nombre text,
   tienda_ciudad text,
   hora_recogida text,
@@ -345,6 +345,54 @@ end;
 $$;
 
 -- ──────────────────────────────────────────────
+-- user_rewards (achievement-based gifts)
+-- ──────────────────────────────────────────────
+create table if not exists public.user_rewards (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  achievement_id integer not null,
+  product_id integer not null references public.products(id),
+  status text not null default 'pending',  -- pending | redeemed
+  created_at timestamptz not null default now(),
+  redeemed_at timestamptz,
+  unique (user_id, achievement_id)
+);
+
+create index if not exists user_rewards_user_id_idx on public.user_rewards(user_id);
+
+alter table public.user_rewards enable row level security;
+
+-- Users see their own rewards
+drop policy if exists "user_rewards_select_own" on public.user_rewards;
+create policy "user_rewards_select_own" on public.user_rewards
+  for select using (auth.uid() = user_id);
+
+-- Users can insert their own rewards (for granting on achievement unlock)
+drop policy if exists "user_rewards_insert_own" on public.user_rewards;
+create policy "user_rewards_insert_own" on public.user_rewards
+  for insert with check (auth.uid() = user_id);
+
+-- Admins can see and update all rewards
+drop policy if exists "user_rewards_select_admin" on public.user_rewards;
+create policy "user_rewards_select_admin" on public.user_rewards
+  for select using (
+    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
+  );
+
+drop policy if exists "user_rewards_update_admin" on public.user_rewards;
+create policy "user_rewards_update_admin" on public.user_rewards
+  for update using (
+    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
+  );
+
+-- ──────────────────────────────────────────────
 -- Enable Realtime for orders table
 -- ──────────────────────────────────────────────
 alter publication supabase_realtime add table public.orders;
+
+-- ──────────────────────────────────────────────
+-- Migration: en_recogida → pendiente, remove cancelado
+-- Run this ONCE on existing databases
+-- ──────────────────────────────────────────────
+-- update public.orders set estado = 'pendiente' where estado = 'en_recogida';
+-- delete from public.orders where estado = 'cancelado';

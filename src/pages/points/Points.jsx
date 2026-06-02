@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePoints } from '../../hooks/usePoints'
 import { useOrders } from '../../hooks/useOrders'
+import { useAuthStore } from '../../store/authStore'
+import { grantAchievementRewards, fetchPendingRewards } from '../../lib/rewards'
 import PageWrapper from '../../components/layout/PageWrapper'
 
 /* ── SVG icon components ── */
@@ -232,11 +234,22 @@ export default function Points() {
   const navigate = useNavigate()
   const { points, currentTier, nextTierName, pointsToNext, progress, tiers: TIERS } = usePoints()
   const { orders } = useOrders()
+  const user = useAuthStore((s) => s.user)
   const [showRules, setShowRules] = useState(false)
+  const [pendingRewards, setPendingRewards] = useState([])
 
   const ctx = useMemo(() => getAchievementContext(orders, TIERS, currentTier), [orders, TIERS, currentTier])
   const badges = useMemo(() => ALL_BADGES.map(b => ({ ...b, unlocked: b.check(ctx) })), [ctx])
   const unlockedCount = badges.filter(b => b.unlocked).length
+
+  // Grant rewards for unlocked achievements (idempotent) and fetch pending
+  useEffect(() => {
+    if (!user?.id || orders.length === 0) return
+    const unlockedIds = badges.filter(b => b.unlocked).map(b => b.id)
+    grantAchievementRewards(user.id, unlockedIds).then(() =>
+      fetchPendingRewards(user.id).then(setPendingRewards)
+    )
+  }, [user?.id, badges, orders.length])
 
   return (
     <PageWrapper>
@@ -302,6 +315,40 @@ export default function Points() {
 
         {/* Separator */}
         <div className="h-px bg-[#DFE4EC] mt-8" />
+
+        {/* Tus regalos (pending rewards) */}
+        {pendingRewards.length > 0 && (
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-3">
+              <h2 className="text-brand-black font-bold text-base">Tus regalos</h2>
+              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
+                {pendingRewards.length}
+              </span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {pendingRewards.map((reward) => (
+                <div key={reward.id} className="flex items-center gap-3 bg-white rounded-xl p-4" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                  <div className="w-12 h-12 rounded-full bg-[#FEF3C7] shrink-0 flex items-center justify-center overflow-hidden">
+                    {reward.products?.imagen
+                      ? <img src={reward.products.imagen} alt={reward.products.nombre} className="w-full h-full object-cover" />
+                      : <IconGift size={24} color="#D97706" />
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#2E2D38] truncate">
+                      {reward.products?.nombre || 'Producto regalo'} gratis
+                    </p>
+                    <p className="text-xs text-[#54647A] mt-0.5">Recoge en tu próximo pedido</p>
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
+                    <IconGift size={14} color="white" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="h-px bg-[#DFE4EC] mt-6" />
+          </div>
+        )}
 
         {/* Recompensas (logros) */}
         <div className="mt-6">

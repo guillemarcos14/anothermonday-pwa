@@ -143,7 +143,7 @@ export default function CustomizationModal({ product, onConfirm, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 pb-5 pt-2 border-t border-[#F0F2F5]">
+        <div className="px-5 pb-20 pt-2 border-t border-[#F0F2F5] md:pb-5">
           <button
             onClick={handleConfirm}
             className="w-full bg-brand-green text-white font-bold py-3.5 rounded-xl text-sm"

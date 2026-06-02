@@ -3,21 +3,20 @@ import { listarTodosPedidos, actualizarEstadoPedido } from '../../lib/orders'
 import { supabase } from '../../lib/supabase'
 
 const ESTADOS = [
-  { value: '', label: 'Todos' },
-  { value: 'en_recogida', label: 'En Recogida' },
-  { value: 'completado', label: 'Completado' },
-  { value: 'cancelado', label: 'Cancelado' },
+  { value: 'pendiente', label: 'Pendientes' },
+  { value: 'completado', label: 'Completados' },
+  { value: 'entregado', label: 'Entregados' },
 ]
 
 const ESTADO_COLORS = {
-  en_recogida: 'bg-amber-100 text-amber-800',
+  pendiente: 'bg-amber-100 text-amber-800',
   completado: 'bg-green-100 text-green-800',
-  cancelado: 'bg-red-100 text-red-800',
+  entregado: 'bg-blue-100 text-blue-800',
 }
 
 export default function AdminOrders() {
   const [pedidos, setPedidos] = useState([])
-  const [filtro, setFiltro] = useState('')
+  const [filtro, setFiltro] = useState('pendiente')
   const [loading, setLoading] = useState(true)
   const [expandido, setExpandido] = useState(null)
 
@@ -128,19 +127,13 @@ export default function AdminOrders() {
                       ))}
                     </div>
 
-                    {pedido.estado === 'en_recogida' && (
-                      <div className="flex gap-2 mt-3">
+                    {pedido.estado === 'pendiente' && (
+                      <div className="mt-3">
                         <button
                           onClick={() => handleCambiarEstado(pedido.id, 'completado')}
-                          className="flex-1 bg-brand-green text-white text-sm font-semibold py-2 rounded-xl"
+                          className="w-full bg-brand-green text-white text-sm font-semibold py-2 rounded-xl"
                         >
-                          Completar
-                        </button>
-                        <button
-                          onClick={() => handleCambiarEstado(pedido.id, 'cancelado')}
-                          className="flex-1 bg-[#F0F2F5] text-[#E05252] text-sm font-semibold py-2 rounded-xl"
-                        >
-                          Cancelar
+                          Marcar como completado
                         </button>
                       </div>
                     )}

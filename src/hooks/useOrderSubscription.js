@@ -36,19 +36,19 @@ export function useOrderSubscription() {
             notifyOrdersChanged()
             notifyPointsChanged()
 
-            // Toast when order completed
+            // Toast when order completed (ready for pickup)
             if (newRow.estado === 'completado' && oldRow.estado !== 'completado') {
               useToastStore.getState().addToast(
-                `Tu pedido #${newRow.numero} esta listo para recoger`,
+                `Tu pedido #${newRow.numero} está listo para recoger`,
                 'success'
               )
             }
 
-            // Toast when order cancelled
-            if (newRow.estado === 'cancelado' && oldRow.estado !== 'cancelado') {
+            // Toast when order delivered
+            if (newRow.estado === 'entregado' && oldRow.estado !== 'entregado') {
               useToastStore.getState().addToast(
-                `Tu pedido #${newRow.numero} ha sido cancelado`,
-                'error'
+                `Tu pedido #${newRow.numero} ha sido entregado`,
+                'success'
               )
             }
           }

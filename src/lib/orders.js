@@ -12,7 +12,7 @@ export async function crearPedido({ userId, total, puntos, tienda, hora, items }
       user_id: userId,
       total,
       puntos,
-      estado: 'en_recogida',
+      estado: 'pendiente',
       tienda_nombre: tienda.nombre,
       tienda_ciudad: tienda.ciudad,
       hora_recogida: hora,
@@ -104,17 +104,30 @@ export async function actualizarEstadoPedido(orderId, nuevoEstado) {
 }
 
 /**
- * Find pending pickup order for a given user (for QR scanner).
+ * Find active orders for a given user (pendiente or completado).
  */
-export async function buscarPedidoEnRecogida(userId) {
+export async function buscarPedidosActivos(userId) {
   const { data, error } = await supabase
     .from('orders')
     .select('*, order_items ( product_id, nombre, precio, cantidad )')
     .eq('user_id', userId)
-    .eq('estado', 'en_recogida')
+    .in('estado', ['pendiente', 'completado'])
     .order('created_at', { ascending: false })
-    .limit(1)
 
   if (error) throw error
-  return data?.[0] || null
+  return data || []
+}
+
+/**
+ * Fetch a user's profile by ID (admin use).
+ */
+export async function buscarPerfil(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, email, usuario, points, tier')
+    .eq('id', userId)
+    .single()
+
+  if (error) throw error
+  return data
 }

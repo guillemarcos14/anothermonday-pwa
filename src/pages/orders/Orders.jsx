@@ -560,15 +560,18 @@ export default function Orders() {
                       <p className="text-text-muted text-xs mt-0.5">{fechaStr}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      pedido.estado === 'en_recogida'
-                        ? 'bg-brand-lightGreen text-brand-green'
-                        : pedido.estado === 'cancelado'
-                          ? 'bg-red-100 text-red-700'
-                          : 'bg-[#F0F2F5] text-text-muted'
+                      pedido.estado === 'pendiente'
+                        ? 'bg-amber-100 text-amber-800'
+                        : pedido.estado === 'completado'
+                          ? 'bg-brand-lightGreen text-brand-green'
+                          : pedido.estado === 'entregado'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-[#F0F2F5] text-text-muted'
                     }`}>
-                      {pedido.estado === 'en_recogida' ? 'En Recogida'
-                        : pedido.estado === 'cancelado' ? 'Cancelado'
-                        : 'Completado'}
+                      {pedido.estado === 'pendiente' ? 'Pendiente'
+                        : pedido.estado === 'completado' ? 'Listo para recoger'
+                        : pedido.estado === 'entregado' ? 'Entregado'
+                        : pedido.estado}
                     </span>
                   </div>
                   <p className="text-text-muted text-xs mb-2 line-clamp-1">{resumen}</p>
