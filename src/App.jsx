@@ -15,7 +15,6 @@ import Home from './pages/home/Home'
 const Points = lazy(() => import('./pages/points/Points'))
 const Orders = lazy(() => import('./pages/orders/Orders'))
 const QR = lazy(() => import('./pages/qr/QR'))
-const Profile = lazy(() => import('./pages/profile/Profile'))
 const Rewards = lazy(() => import('./pages/rewards/Rewards'))
 
 // Admin routes (lazy)
@@ -86,7 +85,6 @@ export default function App() {
             <Route path="/points" element={<Points />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/qr" element={<QR />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/rewards" element={<Rewards />} />
           </Route>
 
