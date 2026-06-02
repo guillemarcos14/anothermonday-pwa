@@ -5,6 +5,19 @@ import { useAuthStore } from '../../store/authStore'
 import { usePoints, notifyPointsChanged } from '../../hooks/usePoints'
 import PageWrapper from '../../components/layout/PageWrapper'
 
+// Maps reward names to existing product images
+const REWARD_IMAGE_MAP = {
+  'café gratis': '/latte.webp',
+  'muffin gratis': '/muffinchoco.webp',
+  'matcha latte gratis': '/matchalatte.webp',
+  'croissant gratis': '/croissant.webp',
+  'descuento 20%': '/cookiechoco.webp',
+}
+
+function getRewardImage(reward) {
+  return REWARD_IMAGE_MAP[reward.nombre.toLowerCase()] || reward.imagen || null
+}
+
 export default function Rewards() {
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
@@ -101,8 +114,8 @@ export default function Rewards() {
               return (
                 <div key={reward.id} className="bg-white rounded-xl p-4 flex items-center gap-4" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                   <div className="w-14 h-14 rounded-xl bg-[#EAF2EB] flex items-center justify-center shrink-0 overflow-hidden">
-                    {reward.imagen ? (
-                      <img src={reward.imagen} alt={reward.nombre} className="w-full h-full object-cover" loading="lazy" />
+                    {getRewardImage(reward) ? (
+                      <img src={getRewardImage(reward)} alt={reward.nombre} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <svg width="24" height="24" fill="none" stroke="#46704F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                         <rect x="3" y="8" width="18" height="4" rx="1" />
