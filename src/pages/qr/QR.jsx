@@ -66,7 +66,7 @@ export default function QR() {
 
       <div className="px-5 mt-6 flex flex-col items-center">
         <p className="text-[#54647A] text-sm text-center leading-relaxed mb-6">
-          Muestra este código en caja para acumular<br />puntos y canjear recompensas
+          Muestra este código en caja para recoger<br />tus pedidos
         </p>
 
         {/* QR Card */}
