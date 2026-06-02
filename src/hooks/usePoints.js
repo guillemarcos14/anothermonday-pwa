@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { calcularPuntos } from '../lib/orders'
+import { useAuthStore } from '../store/authStore'
 
 const TIERS = [
   { name: 'Bronce', minPoints: 0, maxPoints: 100 },
@@ -50,6 +51,7 @@ export function notifyPointsChanged() {
  * with localStorage as offline cache.
  */
 export function usePoints() {
+  const user = useAuthStore((s) => s.user)
   const [points, setPoints] = useState(getCachedPoints)
 
   const fetchPoints = useCallback(async () => {
@@ -64,6 +66,8 @@ export function usePoints() {
   }, [])
 
   useEffect(() => {
+    if (!user) return // Wait for auth session before querying (RLS needs it)
+
     let active = true
     calcularPuntos()
       .then((total) => { if (active) { setPoints(total); setCachedPoints(total) } })
@@ -71,7 +75,7 @@ export function usePoints() {
 
     refreshListeners.add(fetchPoints)
     return () => { active = false; refreshListeners.delete(fetchPoints) }
-  }, [fetchPoints])
+  }, [fetchPoints, user]) // Re-fire when user goes from null → defined
 
   const currentTier = getTierFromPoints(points)
   const nextTierName = getNextTierName(currentTier)

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { listarPedidos } from '../lib/orders'
+import { useAuthStore } from '../store/authStore'
 
 const CACHE_KEY = 'cached_orders'
 
@@ -30,6 +31,7 @@ export function notifyOrdersChanged() {
  * with localStorage as offline cache.
  */
 export function useOrders() {
+  const user = useAuthStore((s) => s.user)
   const [orders, setOrders] = useState(getCachedOrders)
   const [loading, setLoading] = useState(true)
 
@@ -46,11 +48,13 @@ export function useOrders() {
   }, [])
 
   useEffect(() => {
+    if (!user) return // Wait for auth session before querying (RLS needs it)
+
     fetchOrders()
 
     refreshListeners.add(fetchOrders)
     return () => { refreshListeners.delete(fetchOrders) }
-  }, [fetchOrders])
+  }, [fetchOrders, user]) // Re-fire when user goes from null → defined
 
   return { orders, loading, refresh: fetchOrders }
 }

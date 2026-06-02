@@ -19,7 +19,7 @@ async function fetchProfile(userId) {
 }
 
 export function useAuth() {
-  const { setUser, setSession, setLoading, logout } = useAuthStore()
+  const { hydrate, setLoading, logout } = useAuthStore()
   const { setProfile, clearProfile } = useUserStore()
 
   useEffect(() => {
@@ -37,8 +37,8 @@ export function useAuth() {
       .then(({ data: { session } }) => {
         if (cancelled) return
         clearTimeout(safetyTimeout)
-        setSession(session)
-        setUser(session?.user ?? null)
+        // Atomic update: set user + session + loading in a single render
+        hydrate(session?.user ?? null, session)
         if (session?.user) {
           fetchProfile(session.user.id).then((profile) => {
             if (cancelled) return
@@ -49,7 +49,6 @@ export function useAuth() {
             }
           })
         }
-        setLoading(false)
       })
       .catch(async (err) => {
         if (cancelled) return
@@ -57,16 +56,14 @@ export function useAuth() {
         console.error('[useAuth] getSession failed:', err)
         // Clear stale tokens so the error doesn't repeat on next visit
         await supabase.auth.signOut().catch(() => {})
-        setUser(null)
-        setSession(null)
-        setLoading(false)
+        hydrate(null, null)
       })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (cancelled) return
-        setSession(session)
-        setUser(session?.user ?? null)
+        // Atomic update to avoid intermediate state
+        hydrate(session?.user ?? null, session)
         if (session?.user) {
           const profile = await fetchProfile(session.user.id)
           if (cancelled) return
@@ -79,7 +76,6 @@ export function useAuth() {
         } else {
           clearProfile()
         }
-        setLoading(false)
       }
     )
 
@@ -88,5 +84,5 @@ export function useAuth() {
       clearTimeout(safetyTimeout)
       subscription.unsubscribe()
     }
-  }, [setUser, setSession, setLoading, setProfile, clearProfile, logout])
+  }, [hydrate, setLoading, setProfile, clearProfile, logout])
 }

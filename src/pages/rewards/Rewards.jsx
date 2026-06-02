@@ -15,6 +15,8 @@ export default function Rewards() {
   const [mensaje, setMensaje] = useState(null)
 
   useEffect(() => {
+    if (!user) return // Wait for auth session (RLS needs it)
+
     supabase
       .from('rewards')
       .select('*')
@@ -24,7 +26,7 @@ export default function Rewards() {
         if (!error && data) setRewards(data)
         setLoading(false)
       })
-  }, [])
+  }, [user]) // Re-fire when user goes from null → defined
 
   const handleCanjear = async (reward) => {
     if (!user?.id) return
