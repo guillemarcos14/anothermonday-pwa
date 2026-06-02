@@ -8,7 +8,7 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text,
-  usuario text,
+  name text,
   poblacion text,
   cumpleanos date,
   points integer not null default 0,

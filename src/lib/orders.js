@@ -124,7 +124,7 @@ export async function buscarPedidosActivos(userId) {
 export async function buscarPerfil(userId) {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, usuario, points, tier')
+    .select('id, email, name, points, tier')
     .eq('id', userId)
     .single()
 

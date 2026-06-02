@@ -213,7 +213,7 @@ export default function AdminScanner() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[#2E2D38] font-bold text-base truncate">
-                  {cliente.perfil.usuario || cliente.perfil.email || 'Sin nombre'}
+                  {cliente.perfil.name || cliente.perfil.email || 'Sin nombre'}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-xs text-[#54647A]">{cliente.perfil.tier}</span>
