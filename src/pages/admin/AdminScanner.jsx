@@ -37,14 +37,18 @@ export default function AdminScanner() {
         buscarPedidosActivos(userId),
       ])
 
-      // Fetch pending user_rewards
-      const { data: rewards } = await supabase
-        .from('user_rewards')
-        .select('id, achievement_id, product_id, status, products ( nombre, imagen )')
-        .eq('user_id', userId)
-        .eq('status', 'pending')
+      // Fetch pending user_rewards (table may not exist yet)
+      let rewards = []
+      try {
+        const { data } = await supabase
+          .from('user_rewards')
+          .select('id, achievement_id, product_id, status, products ( nombre, imagen )')
+          .eq('user_id', userId)
+          .eq('status', 'pending')
+        rewards = data || []
+      } catch { /* table may not exist yet */ }
 
-      setCliente({ perfil, pedidos, rewards: rewards || [] })
+      setCliente({ perfil, pedidos, rewards })
     } catch (err) {
       setError('No se encontró el usuario o hubo un error: ' + err.message)
     } finally {

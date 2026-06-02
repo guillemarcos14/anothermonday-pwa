@@ -120,14 +120,16 @@ export async function buscarPedidosActivos(userId) {
 
 /**
  * Fetch a user's profile by ID (admin use).
+ * Uses maybeSingle to avoid 406 when RLS blocks the row.
  */
 export async function buscarPerfil(userId) {
   const { data, error } = await supabase
     .from('profiles')
     .select('id, email, name, points, tier')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
 
   if (error) throw error
+  if (!data) throw new Error('Perfil no encontrado. Revisa las políticas RLS de profiles para admins.')
   return data
 }
