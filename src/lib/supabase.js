@@ -7,6 +7,11 @@ export const supabase = createClient(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
+      // Default is 5000ms. The lock protects token refresh; keeping the
+      // timeout short ensures the app recovers quickly under React
+      // StrictMode double-mount (where the first mount's lock is
+      // orphaned and must be stolen by the second mount).
+      lockAcquireTimeout: 5000,
     },
   }
 )
