@@ -111,7 +111,7 @@ export default function Login() {
           name,
           email: user.email,
           poblacion,
-          birthday,
+          cumpleanos: birthday || null,
           points: 0,
           tier: 'Bronce',
         }
