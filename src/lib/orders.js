@@ -125,9 +125,8 @@ export async function buscarPedidosActivos(userId) {
 export async function buscarPerfil(userId) {
   const { data, error } = await supabase
     .rpc('admin_get_profile', { target_uid: userId })
-    .maybeSingle()
 
   if (error) throw error
-  if (!data) throw new Error('Perfil no encontrado.')
-  return data
+  if (!data || data.length === 0) throw new Error('Perfil no encontrado.')
+  return data[0]
 }
