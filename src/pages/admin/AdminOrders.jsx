@@ -101,7 +101,7 @@ export default function AdminOrders() {
                         {pedido.estado}
                       </span>
                     </div>
-                    <p className="text-[#54647A] text-xs mt-0.5">
+                    <p className="text-[#54647A] text-sm mt-0.5 truncate">
                       {fechaStr} · {pedido.tienda_nombre} · {pedido.total.toFixed(2)} €
                     </p>
                   </div>

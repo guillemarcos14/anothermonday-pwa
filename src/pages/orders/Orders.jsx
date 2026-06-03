@@ -309,11 +309,11 @@ export default function Orders() {
             <p className="text-text-muted text-xs mb-1">Hora de Recogida</p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <svg className="text-text-muted" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <svg className="text-text-muted shrink-0" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
-                <p className="text-brand-black font-semibold text-sm">{hora}</p>
+                <p className="text-brand-black font-semibold text-base whitespace-nowrap">{hora}</p>
               </div>
               {!isCarrito && (
                 <button onClick={() => setShowHoraModal(true)} className="text-[#1D4D4F] text-sm font-medium">Cambiar</button>
@@ -557,7 +557,7 @@ export default function Orders() {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-brand-black font-bold text-sm">Pedido #{pedido.numero}</p>
-                      <p className="text-text-muted text-xs mt-0.5">{fechaStr}</p>
+                      <p className="text-text-muted text-sm mt-0.5">{fechaStr}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                       pedido.estado === 'pendiente'
@@ -616,7 +616,7 @@ export default function Orders() {
                 <button
                   key={h}
                   onClick={() => { setHora(h); setShowHoraModal(false) }}
-                  className={`px-3 py-3 rounded-xl text-sm font-medium text-center ${
+                  className={`px-3 py-3 rounded-xl text-base font-medium text-center ${
                     hora === h
                       ? 'bg-brand-green text-white'
                       : 'bg-brand-bg text-brand-black'

@@ -366,7 +366,7 @@ export default function DesktopApp() {
                 <div className="px-6 pt-4 flex gap-4">
                   <button onClick={() => setShowHoraModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
                     <p className="text-text-muted text-xs mb-0.5">Hora</p>
-                    <p className="text-brand-black font-semibold text-sm">{hora}</p>
+                    <p className="text-brand-black font-semibold text-base whitespace-nowrap">{hora}</p>
                   </button>
                   <button onClick={() => setShowTiendaModal(true)} className="flex-1 bg-brand-bg rounded-xl px-4 py-3 text-left hover:ring-2 hover:ring-brand-green transition-all">
                     <p className="text-text-muted text-xs mb-0.5">Tienda</p>
@@ -480,7 +480,7 @@ export default function DesktopApp() {
             <div className="overflow-y-auto px-5 pb-5 grid grid-cols-3 gap-2">
               {getHorasDisponibles().map((h) => (
                 <button key={h} onClick={() => { setHora(h); setShowHoraModal(false) }}
-                  className={`px-3 py-3 rounded-xl text-sm font-medium text-center ${hora === h ? 'bg-brand-green text-white' : 'bg-brand-bg text-brand-black'}`}
+                  className={`px-3 py-3 rounded-xl text-base font-medium text-center ${hora === h ? 'bg-brand-green text-white' : 'bg-brand-bg text-brand-black'}`}
                 >{h}</button>
               ))}
             </div>
